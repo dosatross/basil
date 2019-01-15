@@ -16,7 +16,7 @@ Categories:
 
 `./manage import_categories --file <file>`
 
-or ``./manage import_categories` for default file
+or `./manage import_categories` for default file
 
 Transactions:
 
