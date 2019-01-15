@@ -1,0 +1,96 @@
+Fine - Other
+Refund - Other
+Reimbursement - Other
+Income - Selling
+Refund - Tax Refund
+Self Improvement - Other
+Allowance - Centrelink
+Allowance - Parents
+Allowance - Baby Bond
+Self Improvement - Tech
+Self Improvement - Career
+Self Improvement - Improv
+Self Improvement - Spirituality
+Self Improvement - Martial Arts
+Self Improvement - Finance
+Gifts - Other
+Banking & Finance - ATM Withdrawals
+Banking & Finance - Investment
+Banking & Finance - Taxes & Fines
+Banking & Finance - Fees
+Banking & Finance - Interest
+Banking & Finance - Loan Repayments
+Banking & Finance - Other Banking & Finance
+Income - Govt Benefits
+Income - Salary & Wages
+Income - Shares & Dividends
+Income - Other Income
+Income - Deposits
+Transport - Vehicle Maintenance
+Transport - Fuel
+Transport - Parking & Tolls
+Transport - Public Transport
+Transport - Taxi & Rideshare
+Transport - Other Transport
+Household Utilities - Electricity & Gas
+Household Utilities - Phone & Internet
+Household Utilities - Water
+Household Utilities - Other Household Utilities
+Health & Beauty - Hair & Beauty
+Health & Beauty - Gyms & Fitness
+Health & Beauty - Other Health & Beauty
+Health & Beauty - Doctors & Dentist
+Health & Beauty - Eyewear
+Health & Beauty - Chemists
+Shopping - Electronics & Appliances
+Shopping - Clothing & Fashion
+Shopping - Furniture
+Shopping - Other Shopping
+Shopping - Homewares
+Shopping - Jewellery
+Shopping - Sports & Outdoor
+Home - Rent
+Home - Rates
+Home - Other Home
+Home - Services & Trades
+Home - Home Improvement
+Pets - Grooming & Services
+Pets - Vets
+Pets - Other Pets
+Pets - Pet Shops
+Pets - Pet Insurance
+Holiday & Travel - Hotels & Accomodation
+Holiday & Travel - Flights
+Holiday & Travel - Other Travel
+Holiday & Travel - Vehicle Rentals
+Work & Study - Books & Stationery
+Work & Study - Course Fees
+Work & Study - News & Subscriptions
+Work & Study - Other Work & Study
+Groceries - Supermarkets
+Groceries - Convenience Stores
+Groceries - Liquor Stores
+Groceries - Other Groceries
+Entertainment - Other Entertainment
+Entertainment - Movies
+Entertainment - Events
+Entertainment - Media Subscriptions
+Entertainment - Betting & Lotteries
+Food & Drinks - Bars & Pubs
+Food & Drinks - Takeaways Default
+Food & Drinks - Other Food & Drinks
+Food & Drinks - Cafes & Coffee
+Food & Drinks - Restaurants
+Kids - Activities & Entertainment
+Kids - Childcare
+Kids - School Fees
+Kids - Other Kids
+Transferring Money - Savings
+Transferring Money - Credit Card
+Transferring Money - Other Transferring Money
+Insurance - Health & Life Insurance
+Insurance - Car Insurance
+Insurance - Home Insurance
+Insurance - Other Insurance
+Miscellaneous - Charity
+Miscellaneous - Other

@@ -1,0 +1,97 @@
+category,subcategory,is_credit,is_adjustment,is_internal,is_earned
+Allowance,Centrelink,TRUE,FALSE,FALSE,FALSE
+Allowance,Parents,TRUE,FALSE,FALSE,FALSE
+Allowance,Baby Bond,TRUE,FALSE,FALSE,FALSE
+Income,Selling,TRUE,FALSE,FALSE,TRUE
+Reimbursement,Other,NULL,TRUE,FALSE,NULL
+Refund,Other,FALSE,TRUE,FALSE,NULL
+Refund,Tax Refund,TRUE,FALSE,FALSE,TRUE
+Self Improvement,Other,FALSE,FALSE,FALSE,NULL
+Self Improvement,Tech,FALSE,FALSE,FALSE,NULL
+Self Improvement,Career,FALSE,FALSE,FALSE,NULL
+Self Improvement,Improv,FALSE,FALSE,FALSE,NULL
+Self Improvement,Spirituality,FALSE,FALSE,FALSE,NULL
+Self Improvement,Martial Arts,FALSE,FALSE,FALSE,NULL
+Self Improvement,Finance,FALSE,FALSE,FALSE,NULL
+Fine,Other,FALSE,FALSE,FALSE,NULL
+Gifts,Other,FALSE,FALSE,FALSE,NULL
+Transferring Money,Savings,NULL,FALSE,TRUE,NULL
+Transferring Money,Credit Card,NULL,FALSE,TRUE,NULL
+Transferring Money,Other Transferring Money,NULL,FALSE,TRUE,NULL
+Income,Govt Benefits,TRUE,FALSE,FALSE,FALSE
+Income,Salary & Wages,TRUE,FALSE,FALSE,TRUE
+Income,Shares & Dividends,TRUE,FALSE,FALSE,TRUE
+Income,Other Income,TRUE,FALSE,FALSE,NULL
+Income,Deposits,TRUE,FALSE,FALSE,NULL
+Banking & Finance,ATM Withdrawals,FALSE,FALSE,FALSE,NULL
+Banking & Finance,Investment,FALSE,FALSE,FALSE,NULL
+Banking & Finance,Taxes & Fines,FALSE,FALSE,FALSE,NULL
+Banking & Finance,Fees,FALSE,FALSE,FALSE,NULL
+Banking & Finance,Interest,FALSE,FALSE,FALSE,NULL
+Banking & Finance,Loan Repayments,FALSE,FALSE,FALSE,NULL
+Banking & Finance,Other Banking & Finance,FALSE,FALSE,FALSE,NULL
+Transport,Vehicle Maintenance,FALSE,FALSE,FALSE,NULL
+Transport,Fuel,FALSE,FALSE,FALSE,NULL
+Transport,Parking & Tolls,FALSE,FALSE,FALSE,NULL
+Transport,Public Transport,FALSE,FALSE,FALSE,NULL
+Transport,Taxi & Rideshare,FALSE,FALSE,FALSE,NULL
+Transport,Other Transport,FALSE,FALSE,FALSE,NULL
+Household Utilities,Electricity & Gas,FALSE,FALSE,FALSE,NULL
+Household Utilities,Phone & Internet,FALSE,FALSE,FALSE,NULL
+Household Utilities,Water,FALSE,FALSE,FALSE,NULL
+Household Utilities,Other Household Utilities,FALSE,FALSE,FALSE,NULL
+Health & Beauty,Hair & Beauty,FALSE,FALSE,FALSE,NULL
+Health & Beauty,Gyms & Fitness,FALSE,FALSE,FALSE,NULL
+Health & Beauty,Other Health & Beauty,FALSE,FALSE,FALSE,NULL
+Health & Beauty,Doctors & Dentist,FALSE,FALSE,FALSE,NULL
+Health & Beauty,Eyewear,FALSE,FALSE,FALSE,NULL
+Health & Beauty,Chemists,FALSE,FALSE,FALSE,NULL
+Shopping,Electronics & Appliances,FALSE,FALSE,FALSE,NULL
+Shopping,Clothing & Fashion,FALSE,FALSE,FALSE,NULL
+Shopping,Furniture,FALSE,FALSE,FALSE,NULL
+Shopping,Other Shopping,FALSE,FALSE,FALSE,NULL
+Shopping,Homewares,FALSE,FALSE,FALSE,NULL
+Shopping,Jewellery,FALSE,FALSE,FALSE,NULL
+Shopping,Sports & Outdoor,FALSE,FALSE,FALSE,NULL
+Home,Rent,FALSE,FALSE,FALSE,NULL
+Home,Rates,FALSE,FALSE,FALSE,NULL
+Home,Other Home,FALSE,FALSE,FALSE,NULL
+Home,Services & Trades,FALSE,FALSE,FALSE,NULL
+Home,Home Improvement,FALSE,FALSE,FALSE,NULL
+Pets,Grooming & Services,FALSE,FALSE,FALSE,NULL
+Pets,Vets,FALSE,FALSE,FALSE,NULL
+Pets,Other Pets,FALSE,FALSE,FALSE,NULL
+Pets,Pet Shops,FALSE,FALSE,FALSE,NULL
+Pets,Pet Insurance,FALSE,FALSE,FALSE,NULL
+Holiday & Travel,Hotels & Accomodation,FALSE,FALSE,FALSE,NULL
+Holiday & Travel,Flights,FALSE,FALSE,FALSE,NULL
+Holiday & Travel,Other Travel,FALSE,FALSE,FALSE,NULL
+Holiday & Travel,Vehicle Rentals,FALSE,FALSE,FALSE,NULL
+Work & Study,Books & Stationery,FALSE,FALSE,FALSE,NULL
+Work & Study,Course Fees,FALSE,FALSE,FALSE,NULL
+Work & Study,News & Subscriptions,FALSE,FALSE,FALSE,NULL
+Work & Study,Other Work & Study,FALSE,FALSE,FALSE,NULL
+Groceries,Supermarkets,FALSE,FALSE,FALSE,NULL
+Groceries,Convenience Stores,FALSE,FALSE,FALSE,NULL
+Groceries,Liquor Stores,FALSE,FALSE,FALSE,NULL
+Groceries,Other Groceries,FALSE,FALSE,FALSE,NULL
+Entertainment,Other Entertainment,FALSE,FALSE,FALSE,NULL
+Entertainment,Movies,FALSE,FALSE,FALSE,NULL
+Entertainment,Events,FALSE,FALSE,FALSE,NULL
+Entertainment,Media Subscriptions,FALSE,FALSE,FALSE,NULL
+Entertainment,Betting & Lotteries,FALSE,FALSE,FALSE,NULL
+Food & Drinks,Bars & Pubs,FALSE,FALSE,FALSE,NULL
+Food & Drinks,Takeaways,FALSE,FALSE,FALSE,NULL
+Food & Drinks,Other Food & Drinks,FALSE,FALSE,FALSE,NULL
+Food & Drinks,Cafes & Coffee,FALSE,FALSE,FALSE,NULL
+Food & Drinks,Restaurants,FALSE,FALSE,FALSE,NULL
+Kids,Activities & Entertainment,FALSE,FALSE,FALSE,NULL
+Kids,Childcare,FALSE,FALSE,FALSE,NULL
+Kids,School Fees,FALSE,FALSE,FALSE,NULL
+Kids,Other Kids,FALSE,FALSE,FALSE,NULL
+Insurance,Health & Life Insurance,FALSE,FALSE,FALSE,NULL
+Insurance,Car Insurance,FALSE,FALSE,FALSE,NULL
+Insurance,Home Insurance,FALSE,FALSE,FALSE,NULL
+Insurance,Other Insurance,FALSE,FALSE,FALSE,NULL
+Miscellaneous,Charity,FALSE,FALSE,FALSE,NULL
+Miscellaneous,Other,FALSE,FALSE,FALSE,NULL

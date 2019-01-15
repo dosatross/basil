@@ -1,0 +1,97 @@
+basil_category,basil_subcategory,pb_category,pb_subcategory
+Allowance,Centrelink,Allowance,Centrelink
+Allowance,Parents,Allowance,Parents
+Allowance,Baby Bond,Allowance,Baby Bond
+Income,Selling,Income,Selling
+Reimbursement,Other,Reimbursement,Other
+Refund,Other,Refund,Other
+Refund,Tax Refund,Refund,Tax Refund
+Self Improvement,Other,Self Improvement,Other
+Self Improvement,Tech,Self Improvement,Tech
+Self Improvement,Career,Self Improvement,Career
+Self Improvement,Improv,Self Improvement,Improv
+Self Improvement,Spirituality,Self Improvement,Spirituality
+Self Improvement,Martial Arts,Self Improvement,Martial Arts
+Self Improvement,Finance,Self Improvement,Finance
+Fine,Other,Fine,Other
+Gifts,Other,Gifts,Other
+Transferring Money,Savings,Transferring Money,Savings
+Transferring Money,Credit Card,Transferring Money,Credit Card
+Transferring Money,Other Transferring Money,Transferring Money,Other Transferring Money
+Income,Govt Benefits,Income,Govt Benefits
+Income,Salary & Wages,Income,Salary & Wages
+Income,Shares & Dividends,Income,Shares & Dividends
+Income,Other Income,Income,Other Income
+Income,Deposits,Income,Deposits
+Banking & Finance,ATM Withdrawals,Banking & Finance,ATM Withdrawals
+Banking & Finance,Investment,Banking & Finance,Investment
+Banking & Finance,Taxes & Fines,Banking & Finance,Taxes & Fines
+Banking & Finance,Fees,Banking & Finance,Fees
+Banking & Finance,Interest,Banking & Finance,Interest
+Banking & Finance,Loan Repayments,Banking & Finance,Loan Repayments
+Banking & Finance,Other Banking & Finance,Banking & Finance,Other Banking & Finance
+Transport,Vehicle Maintenance,Transport,Vehicle Maintenance
+Transport,Fuel,Transport,Fuel
+Transport,Parking & Tolls,Transport,Parking & Tolls
+Transport,Public Transport,Transport,Public Transport
+Transport,Taxi & Rideshare,Transport,Taxi & Rideshare
+Transport,Other Transport,Transport,Other Transport
+Household Utilities,Electricity & Gas,Household Utilities,Electricity & Gas
+Household Utilities,Phone & Internet,Household Utilities,Phone & Internet
+Household Utilities,Water,Household Utilities,Water
+Household Utilities,Other Household Utilities,Household Utilities,Other Household Utilities
+Health & Beauty,Hair & Beauty,Health & Beauty,Hair & Beauty
+Health & Beauty,Gyms & Fitness,Health & Beauty,Gyms & Fitness
+Health & Beauty,Other Health & Beauty,Health & Beauty,Other Health & Beauty
+Health & Beauty,Doctors & Dentist,Health & Beauty,Doctors & Dentist
+Health & Beauty,Eyewear,Health & Beauty,Eyewear
+Health & Beauty,Chemists,Health & Beauty,Chemists
+Shopping,Electronics & Appliances,Shopping,Electronics & Appliances
+Shopping,Clothing & Fashion,Shopping,Clothing & Fashion
+Shopping,Furniture,Shopping,Furniture
+Shopping,Other Shopping,Shopping,Other Shopping
+Shopping,Homewares,Shopping,Homewares
+Shopping,Jewellery,Shopping,Jewellery
+Shopping,Sports & Outdoor,Shopping,Sports & Outdoor
+Home,Rent,Home,Rent
+Home,Rates,Home,Rates
+Home,Other Home,Home,Other Home
+Home,Services & Trades,Home,Services & Trades
+Home,Home Improvement,Home,Home Improvement
+Pets,Grooming & Services,Pets,Grooming & Services
+Pets,Vets,Pets,Vets
+Pets,Other Pets,Pets,Other Pets
+Pets,Pet Shops,Pets,Pet Shops
+Pets,Pet Insurance,Pets,Pet Insurance
+Holiday & Travel,Hotels & Accomodation,Holiday & Travel,Hotels & Accomodation
+Holiday & Travel,Flights,Holiday & Travel,Flights
+Holiday & Travel,Other Travel,Holiday & Travel,Other Travel
+Holiday & Travel,Vehicle Rentals,Holiday & Travel,Vehicle Rentals
+Work & Study,Books & Stationery,Work & Study,Books & Stationery
+Work & Study,Course Fees,Work & Study,Course Fees
+Work & Study,News & Subscriptions,Work & Study,News & Subscriptions
+Work & Study,Other Work & Study,Work & Study,Other Work & Study
+Groceries,Supermarkets,Groceries,Supermarkets
+Groceries,Convenience Stores,Groceries,Convenience Stores
+Groceries,Liquor Stores,Groceries,Liquor Stores
+Groceries,Other Groceries,Groceries,Other Groceries
+Entertainment,Other Entertainment,Entertainment,Other Entertainment
+Entertainment,Movies,Entertainment,Movies
+Entertainment,Events,Entertainment,Events
+Entertainment,Media Subscriptions,Entertainment,Media Subscriptions
+Entertainment,Betting & Lotteries,Entertainment,Betting & Lotteries
+Food & Drinks,Bars & Pubs,Food & Drinks,Bars & Pubs
+Food & Drinks,Takeaways,Food & Drinks,Takeaways
+Food & Drinks,Other Food & Drinks,Food & Drinks,Other Food & Drinks
+Food & Drinks,Cafes & Coffee,Food & Drinks,Cafes & Coffee
+Food & Drinks,Restaurants,Food & Drinks,Restaurants
+Kids,Activities & Entertainment,Kids,Activities & Entertainment
+Kids,Childcare,Kids,Childcare
+Kids,School Fees,Kids,School Fees
+Kids,Other Kids,Kids,Other Kids
+Insurance,Health & Life Insurance,Insurance,Health & Life Insurance
+Insurance,Car Insurance,Insurance,Car Insurance
+Insurance,Home Insurance,Insurance,Home Insurance
+Insurance,Other Insurance,Insurance,Other Insurance
+Miscellaneous,Charity,Miscellaneous,Charity
+Miscellaneous,Other,Miscellaneous,Other
