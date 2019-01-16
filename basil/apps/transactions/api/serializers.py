@@ -10,3 +10,7 @@ class TransactionSerializer(serializers.ModelSerializer):
 
 	def get_category(self, obj):
 		return obj.category.name + ' - ' + obj.category.subcategory
+
+class PeriodTransactionSerializer(serializers.Serializer):
+	total = serializers.DecimalField(decimal_places=2, max_digits=11)
+	period = serializers.DateField()

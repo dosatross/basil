@@ -1,11 +1,16 @@
 import datetime
 from rest_framework import viewsets
 from rest_framework.response import Response
-from basil.apps.categories.models import Category
-from basil.apps.categories.api.serializers import CategorySerializer
+from basil.apps.categories.models import Category, CategoryGroup
+from basil.apps.categories.api.serializers import CategorySerializer, CategoryGroupSerializer
 
 
-class CategoriesViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(viewsets.ModelViewSet):
 
 	serializer_class = CategorySerializer
 	queryset = Category.objects.all()
+
+class CategoryGroupViewSet(viewsets.ModelViewSet):
+
+	serializer_class = CategoryGroupSerializer
+	queryset = CategoryGroup.objects.all()

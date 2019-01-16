@@ -2,7 +2,7 @@ import csv
 import os
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Q
-from basil.apps.categories.models import Category
+from basil.apps.categories.models import Category, CategoryGroup
 from basil.settings import BASE_DIR
 
 class Command(BaseCommand):
@@ -10,12 +10,14 @@ class Command(BaseCommand):
 		parser.add_argument(
 			'--file',
 			dest='file',
-			default=os.path.join(BASE_DIR,'apps','categories','categories.csv')
+			default=os.path.join(BASE_DIR,'apps','categories','fixtures','categories.csv')
 			)
 
 	def handle(self, *args, **options):
 		with open(options['file']) as csvfile:
 			reader = csv.DictReader(csvfile)
+			group_list = [element for element in reader.fieldnames if element not in ["category","subcategory","is_credit","is_adjustment","is_internal"]]
+
 			for row in reader:
 				categorystr = row['category']
 				subcategory = row['subcategory']
@@ -28,7 +30,6 @@ class Command(BaseCommand):
 				is_credit_str = row['is_credit']
 				is_adjustment_str = row['is_adjustment']
 				is_internal_str = row['is_internal']
-				is_earned_str = row['is_earned']
 
 				if is_credit_str == "TRUE":
 					is_credit = True
@@ -47,13 +48,13 @@ class Command(BaseCommand):
 				else:
 					is_internal = False
 
-				if is_earned_str == "TRUE":
-					is_earned = True
-				elif is_earned_str == "FALSE":
-					is_earned = False
-				else:
-					is_earned = None
 
 				category = Category.objects.create(name=categorystr, subcategory=subcategory, 
-					is_credit=is_credit,is_adjustment=is_adjustment,
-					is_internal=is_internal,is_earned=is_earned)
+					is_credit=is_credit,is_adjustment=is_adjustment, is_internal=is_internal)
+
+				print(categorystr + "-" + subcategory)
+
+				# add groups
+				for group_name in group_list:
+					if row[group_name] == "TRUE":
+						category.groups.add(CategoryGroup.objects.get(name=group_name))

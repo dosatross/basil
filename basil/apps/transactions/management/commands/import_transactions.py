@@ -13,12 +13,12 @@ class Command(BaseCommand):
 		parser.add_argument(
 			'--transactions',
 			dest='transactions',
-			default=os.path.join(BASE_DIR,'apps','transactions','transactions.csv')
+			default=os.path.join(BASE_DIR,'apps','transactions','fixtures','transactions.csv')
 			)
 		parser.add_argument(
 			'--categories_map',
 			dest='categories_map',
-			default=os.path.join(BASE_DIR,'apps','categories','categories_map.csv')
+			default=os.path.join(BASE_DIR,'apps','categories','fixtures','categories_map.csv')
 			)
 		parser.add_argument(
 			'--source',
