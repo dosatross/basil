@@ -1,3 +1,13 @@
-basil/db.sqlite3
+data/
+
+# virtual environment
 env
-data
+
+#django
+*.log
+basil/db.sqlite3
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
