@@ -12,16 +12,11 @@ This project uses Django REST Framework to provide a web API for transaction and
 
 ### Import CSV Data
 
-Categories:
-
-`./manage import_categories --file <file>`
-
-or `./manage import_categories` for default file
-
-Transactions:
-
-`./manage import_transactions --transactions <path> --categories_map <path> --source <source>`
-
-or `./manage import_transactions` for defaults
+1. Categories: `./manage.py import_groups --file <file>`
+2. Categories: `./manage.py import_categories --file <file>`
+3. Transactions: `./manage.py import_transactions --transactions <path> --categories_map <path> --source <source>`
 
 `categories_map` maps categories from a source to basil categories
+
+Running commands without parameters will import sample data
+
