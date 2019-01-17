@@ -1,3 +1,5 @@
 from django.contrib import admin
+from basil.apps.categories.models import Category, CategoryGroup
 
-# Register your models here.
+admin.site.register(Category)
+admin.site.register(CategoryGroup)
