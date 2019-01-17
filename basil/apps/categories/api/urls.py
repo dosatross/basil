@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
-router.register('categories', views.CategoryViewSet, basename='categories')
-router.register('groups', views.CategoryGroupViewSet, basename='groups')
+router.register('categories', views.CategoryViewSet)
+router.register('groups', views.CategoryGroupViewSet)
 
 urlpatterns = router.urls

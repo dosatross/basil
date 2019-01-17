@@ -8,6 +8,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'django_extensions',
+    'basil.apps.accounts',
     'basil.apps.transactions',
     'basil.apps.categories',
 ]

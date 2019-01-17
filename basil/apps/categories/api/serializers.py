@@ -15,6 +15,9 @@ class CategoryGroupSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
 	groups = serializers.SerializerMethodField()
 
+	def validate(self, data):
+		pass
+
 	class Meta:
 		model = Category
 		fields = '__all__'

@@ -1,6 +1,6 @@
 import datetime
 from django.db.models.functions import TruncWeek, TruncMonth, TruncQuarter, TruncYear
-from rest_framework import viewsets, generics, status
+from rest_framework import viewsets, generics, status, permissions
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -12,6 +12,7 @@ from basil.apps.categories.models import Category
 class TransactionsViewSet(viewsets.ModelViewSet):
 	serializer_class = TransactionSerializer
 	queryset = Transaction.objects.all()
+	permission_classes = (permissions.IsAuthenticated,)
 	filter_backends = (DjangoFilterBackend,SearchFilter,OrderingFilter)
 	filter_fields = ('category__groups__name','category__subcategory','category__name', 'category__is_internal', 'category__is_credit', 'category__is_adjustment')
 	search_fields = ('description','category__name','category__subcategory','category__groups__name')
@@ -25,6 +26,7 @@ class ExpensesViewSet(TransactionsViewSet):
 
 class PeriodView(generics.ListAPIView):
 	queryset = Transaction.objects.all()
+	permission_classes = (permissions.IsAuthenticated,)
 
 	valid = ['w','m','q','y']
 

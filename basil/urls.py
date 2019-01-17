@@ -5,10 +5,12 @@ from rest_framework.documentation import include_docs_urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('docs/', include_docs_urls(title='Basil API Docs')),
+    path('api-auth/', include('rest_framework.urls')), 
 ]
 
 
 api_urlpatterns = [
+	re_path('users/', include('basil.apps.accounts.api.urls')),
 	re_path('transactions/', include('basil.apps.transactions.api.urls')),
 	re_path('categories/', include('basil.apps.categories.api.urls')),
 ]
