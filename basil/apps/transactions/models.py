@@ -12,10 +12,6 @@ class Transaction(models.Model):
 	class Meta:
 		ordering = ['-date']
 
-	def is_valid():
-		pass
-		# is credit cant have negative amount
-
 	def get_sum_over_period(trunc,categories):
 		return Transaction.objects.filter(category__in=categories) \
 			.annotate(period=trunc('date')) \

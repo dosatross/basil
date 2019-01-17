@@ -6,6 +6,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Q
 from basil.apps.transactions.models import Transaction
 from basil.apps.categories.models import Category
+from basil.apps.transactions.api.serializers import TransactionSerializer
 from basil.settings import BASE_DIR,TIME_ZONE
 
 class Command(BaseCommand):
@@ -59,9 +60,21 @@ class Command(BaseCommand):
 								return
 							break
 
+
 				date = timezone.localize(dt.datetime.strptime(transaction['date'],"%d/%m/%Y"))
 				amount = float(transaction['amount'])
 				description = transaction['description']
+
+				serializer = TransactionSerializer(data={
+					'date': date.date(), 'amount': amount,
+					'category': category.id,'description': description
+					})
+				if not serializer.is_valid():
+					print(serializer.errors)
+					for t in added_transactions:
+						t.delete()
+					return
+
 				
 				new_transaction = Transaction.objects.create(date=date,category=category,amount=amount, description=description)
 				added_transactions.append(new_transaction)

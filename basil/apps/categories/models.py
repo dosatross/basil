@@ -5,6 +5,9 @@ class CategoryGroup(models.Model):
 	name = models.CharField(max_length=50)
 	description = models.CharField(max_length=150, null=True)
 
+	def __str__(self):
+		return self.name
+
 class Category(models.Model):
 	name = models.CharField(max_length=50, null=False, blank=False)
 	subcategory = models.CharField(max_length=50)
