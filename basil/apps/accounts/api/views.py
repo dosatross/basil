@@ -11,7 +11,7 @@ class UserViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.all()
 	permission_classes = (permissions.IsAdminUser,)
 
-class ProfileView(generics.RetrieveUpdateAPIView):
+class UserProfileView(generics.RetrieveUpdateAPIView):
 
 	serializer_class = UserProfileSerializer
 	permission_classes = (permissions.IsAuthenticated,)

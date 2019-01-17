@@ -16,7 +16,9 @@ class CategorySerializer(serializers.ModelSerializer):
 	groups = serializers.SerializerMethodField()
 
 	def validate(self, data):
-		pass
+		if data.get('is_credit') == None and not data.get('is_internal'):
+			raise serializers.ValidationError('Only internal categories can have null is_credit')
+		return data
 
 	class Meta:
 		model = Category
