@@ -1,4 +1,5 @@
 import datetime
+from django.db.models import Q
 from django.db.models.functions import TruncWeek, TruncMonth, TruncQuarter, TruncYear
 from rest_framework import viewsets, generics, status, permissions
 from rest_framework.response import Response
@@ -11,22 +12,34 @@ from basil.apps.categories.models import Category
 
 class TransactionsViewSet(viewsets.ModelViewSet):
 	serializer_class = TransactionSerializer
-	queryset = Transaction.objects.all()
 	permission_classes = (permissions.IsAuthenticated,)
 	filter_backends = (DjangoFilterBackend,SearchFilter,OrderingFilter)
 	filter_fields = ('category__groups__name','category__subcategory','category__name', 'category__is_internal', 'category__is_credit', 'category__is_adjustment')
 	search_fields = ('description','category__name','category__subcategory','category__groups__name')
 	ordering_fields = ('amount', 'date')
 
+	def get_queryset(self):
+		user = self.request.user
+		return Transaction.objects.filter(user=user)
+
 class IncomeViewSet(TransactionsViewSet):
-	queryset = Transaction.objects.filter(category__in=Category.get_income_categories())
+
+	def get_queryset(self):
+		user = self.request.user
+		return Transaction.objects.filter(Q(category__in=Category.get_income_categories()) & Q(user=user))
 
 class ExpensesViewSet(TransactionsViewSet):
-	queryset = Transaction.objects.filter(category__in=Category.get_expense_categories())
+
+	def get_queryset(self):
+		user = self.request.user
+		return Transaction.objects.filter(Q(category__in=Category.get_expense_categories()) & Q(user=user))
 
 class PeriodView(generics.ListAPIView):
-	queryset = Transaction.objects.all()
 	permission_classes = (permissions.IsAuthenticated,)
+
+	def get_queryset(self):
+		user = self.request.user
+		return Transaction.objects.filter(user=user)
 
 	valid = ['w','m','q','y']
 
@@ -45,6 +58,7 @@ class IncomePeriodView(PeriodView):
 			return Response(status=status.HTTP_400_BAD_REQUEST)
 
 		q = Transaction.get_sum_over_period(
+			request.user,
 			PeriodView.get_trunc(period),
 			Category.get_income_categories())
 		serializer = PeriodTransactionSerializer(q, many=True)
@@ -57,6 +71,7 @@ class ExpensePeriodView(PeriodView):
 			return Response(status=status.HTTP_400_BAD_REQUEST)
 
 		q = Transaction.get_sum_over_period(
+			request.user,
 			PeriodView.get_trunc(period),
 			Category.get_expense_categories())
 		serializer = PeriodTransactionSerializer(q, many=True)

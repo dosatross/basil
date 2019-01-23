@@ -4,6 +4,7 @@ from basil.apps.categories.models import Category
 
 class TransactionSerializer(serializers.ModelSerializer):
 	category_display = serializers.SerializerMethodField()
+	user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
 	class Meta:
 		model = Transaction

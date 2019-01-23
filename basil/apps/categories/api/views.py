@@ -8,11 +8,17 @@ from basil.apps.categories.api.serializers import CategorySerializer, CategoryGr
 class CategoryViewSet(viewsets.ModelViewSet):
 
 	serializer_class = CategorySerializer
-	queryset = Category.objects.all()
 	permission_classes = (permissions.IsAuthenticated,)
+
+	def get_queryset(self):
+		user = self.request.user
+		return Category.objects.filter(user=user)
 
 class CategoryGroupViewSet(viewsets.ModelViewSet):
 
 	serializer_class = CategoryGroupSerializer
-	queryset = CategoryGroup.objects.all()
 	permission_classes = (permissions.IsAuthenticated,)
+
+	def get_queryset(self):
+		user = self.request.user
+		return CategoryGroup.objects.filter(user=user)

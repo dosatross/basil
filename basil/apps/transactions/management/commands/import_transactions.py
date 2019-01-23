@@ -4,6 +4,8 @@ import pytz
 import datetime as dt
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Q
+from django.contrib.auth.models import User
+from rest_framework.test import APIRequestFactory
 from basil.apps.transactions.models import Transaction
 from basil.apps.categories.models import Category
 from basil.apps.transactions.api.serializers import TransactionSerializer
@@ -26,6 +28,11 @@ class Command(BaseCommand):
 			dest='source',
 			default='pb'
 			)
+		parser.add_argument(
+			'--username',
+			dest='username',
+			default='demo'
+			)
 
 	def handle(self, *args, **options):
 		with open(options['transactions']) as tf, open(options['categories_map']) as cf:
@@ -33,12 +40,13 @@ class Command(BaseCommand):
 			categories_map = csv.DictReader(cf)
 			added_transactions = []
 			source = options['source']
+			user = User.objects.get(username=options['username'])
 			timezone = pytz.timezone(TIME_ZONE)
 
 			for transaction in transactions:
 				categorystr = transaction['category'].split(" - ")[0]
 				subcategory = transaction['category'].split(" - ")[1]
-				category = Category.objects.filter(Q(name=categorystr) & Q(subcategory=subcategory)).first()
+				category = Category.objects.filter(Q(name=categorystr) & Q(subcategory=subcategory) & Q(user=user)).first()
 
 				if not category: # check if a basil category
 					for category_map in categories_map:
@@ -52,7 +60,7 @@ class Command(BaseCommand):
 							# get mapped basil category
 							categorystr = category_map['basil_category'].split(" - ")[0]
 							subcategory = category_map['basil_category'].split(" - ")[1]
-							category = Category.objects.filter(Q(name=categorystr) & Q(subcategory=subcategory)).first()
+							category = Category.objects.filter(Q(name=categorystr) & Q(subcategory=subcategory) & Q(user=user)).first()
 							if not category:
 								print("New category " + categorystr + " - " + subcategory + " detected. New categories must be added before importing transactions.")
 								for t in added_transactions:
@@ -65,10 +73,16 @@ class Command(BaseCommand):
 				amount = float(transaction['amount'])
 				description = transaction['description']
 
+				# validate data
+				# mock request to simulate current user
+				factory = APIRequestFactory()
+				factory = request = factory.get('')
+				request.user = user
+				context = {"request": request}
 				serializer = TransactionSerializer(data={
 					'date': date.date(), 'amount': amount,
 					'category': category.id,'description': description
-					})
+					}, context=context)
 				if not serializer.is_valid():
 					print(serializer.errors)
 					for t in added_transactions:
@@ -76,6 +90,6 @@ class Command(BaseCommand):
 					return
 
 				
-				new_transaction = Transaction.objects.create(date=date,category=category,amount=amount, description=description)
+				new_transaction = Transaction.objects.create(date=date,category=category,amount=amount, description=description,user=user)
 				added_transactions.append(new_transaction)
 				print(date)

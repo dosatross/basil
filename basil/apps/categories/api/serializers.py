@@ -3,6 +3,7 @@ from basil.apps.categories.models import Category, CategoryGroup
 
 class CategoryGroupSerializer(serializers.ModelSerializer):
 	categories = serializers.SerializerMethodField()
+	user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
 	class Meta:
 		model = CategoryGroup
@@ -14,6 +15,7 @@ class CategoryGroupSerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
 	groups = serializers.SerializerMethodField()
+	user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
 	class Meta:
 		model = Category

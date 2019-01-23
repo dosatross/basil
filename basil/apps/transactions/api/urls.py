@@ -10,8 +10,8 @@ urlpatterns = [
     path('expenses/period/<str:period>', views.ExpensePeriodView.as_view(), name='expenseperiod'),
 ]
 
-router.register('transactions', views.TransactionsViewSet, basename='transactions')
-router.register('expenses', views.ExpensesViewSet, basename='expenses')
+router.register('transactions', views.TransactionsViewSet, basename='transaction')
+router.register('expenses', views.ExpensesViewSet, basename='expense')
 router.register('income', views.IncomeViewSet, basename='income')
 
 urlpatterns += router.urls
