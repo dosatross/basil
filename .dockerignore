@@ -1,0 +1,18 @@
+# git
+.git
+.gitignore
+
+data/
+
+# virtual environment
+env
+
+#django
+*.log
+basil/db.sqlite3
+README.md
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
