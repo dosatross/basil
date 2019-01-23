@@ -8,15 +8,19 @@ This project uses Django REST Framework to provide a web API for transaction and
 
 2. `pip install -r requirements.pip`
 
-3. `./manage.py migrate`
+3. `python ./manage.py migrate`
 
-### Import CSV Data
+### Import Data
 
-1. Category groups: `./manage.py import_groups --file <file>`
-2. Categories: `./manage.py import_categories --file <file>`
-3. Transactions: `./manage.py import_transactions --transactions <path> --categories_map <path> --source <source>`
+1. Category groups: `python ./manage.py import_groups --file <file> --username <username>`
+2. Categories: `python ./manage.py import_categories --file <file> --username <username>`
+3. Transactions: `python ./manage.py import_transactions --transactions <path> --categories_map <path> --source <source> --username <username>`
 
 `categories_map` maps categories from a source to basil categories
 
 Running commands without parameters will import sample data
+
+`python ./manage.py import_users` imports a default superuser, admin and application user: 'su', 'admin', 'demo' (same username and password)
+
+
 
