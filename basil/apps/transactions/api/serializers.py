@@ -18,10 +18,10 @@ class TransactionSerializer(serializers.ModelSerializer):
 		category = data.get('category')
 		if category.is_credit and not category.is_internal and data.get('amount') < 0:
 			raise serializers.ValidationError(
-				'A transaction with negative amount cannot be added to a non internal credit category.')
+				'A transaction with negative amount cannot be added to a non internal credit category. Category: ' + str(data.get('category')) + ' Date: ' + str(data.get('date'))  + ' Amount: ' + str(data.get('amount')) + ' Description: ' + str(data.get('description')))
 		if not category.is_credit and not category.is_internal and data.get('amount') > 0:
 			raise serializers.ValidationError(
-				'A transaction with positive amount cannot be added to a non internal debit category.')
+				'A transaction with positive amount cannot be added to a non internal debit category. Category: ' + str(data.get('category')) + ' Date: ' + str(data.get('date'))  + ' Amount: ' + str(data.get('amount')) + ' Description: ' + str(data.get('description')))
 		return data
 
 class PeriodTransactionSerializer(serializers.Serializer):

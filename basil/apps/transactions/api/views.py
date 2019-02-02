@@ -3,11 +3,12 @@ from django.db.models import Q
 from django.db.models.functions import TruncWeek, TruncMonth, TruncQuarter, TruncYear
 from rest_framework import viewsets, generics, status, permissions
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from basil.apps.transactions.models import Transaction
 from basil.apps.transactions.api.serializers import TransactionSerializer, PeriodTransactionSerializer
-from basil.apps.categories.models import Category
+from basil.apps.categories.models import Category, CategoryGroup
 
 
 class TransactionsViewSet(viewsets.ModelViewSet):
@@ -34,13 +35,8 @@ class ExpensesViewSet(TransactionsViewSet):
 		user = self.request.user
 		return Transaction.objects.filter(Q(category__in=Category.get_expense_categories()) & Q(user=user))
 
-class PeriodView(generics.ListAPIView):
+class PeriodTotalView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
-
-	def get_queryset(self):
-		user = self.request.user
-		return Transaction.objects.filter(user=user)
-
 	valid = ['w','m','q','y']
 
 	@classmethod
@@ -51,28 +47,26 @@ class PeriodView(generics.ListAPIView):
 		if period == 'y': trunc = TruncYear
 		return trunc
 
-class IncomePeriodView(PeriodView):
+	def get(self, request, set, period):
+		if period not in self.valid:
+			return Response(status=status.HTTP_400_BAD_REQUEST)
 
-	def list(self, request, period):
-		if period not in PeriodView.valid:
+		if set == 'income':
+			category_set = Category.get_income_categories()
+		elif set == 'expenses':
+			category_set = Category.get_expense_categories()
+		elif set == 'group':
+			group_name = self.request.query_params.get('group')
+			if not group_name or not CategoryGroup.objects.filter(name=group_name).first():
+				return Response(status=status.HTTP_400_BAD_REQUEST)
+			else:
+				category_set = CategoryGroup.objects.filter(name=group_name).first().categories.all()
+		else:
 			return Response(status=status.HTTP_400_BAD_REQUEST)
 
 		q = Transaction.get_sum_over_period(
 			request.user,
-			PeriodView.get_trunc(period),
-			Category.get_income_categories())
-		serializer = PeriodTransactionSerializer(q, many=True)
-		return Response(serializer.data)
-
-class ExpensePeriodView(PeriodView):
-
-	def list(self, request, period):
-		if period not in PeriodView.valid:
-			return Response(status=status.HTTP_400_BAD_REQUEST)
-
-		q = Transaction.get_sum_over_period(
-			request.user,
-			PeriodView.get_trunc(period),
-			Category.get_expense_categories())
+			PeriodTotalView.get_trunc(period),
+			category_set)
 		serializer = PeriodTransactionSerializer(q, many=True)
 		return Response(serializer.data)

@@ -6,8 +6,7 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 
 urlpatterns = [
-    path('income/period/<str:period>', views.IncomePeriodView.as_view(), name='incomeperiod'),
-    path('expenses/period/<str:period>', views.ExpensePeriodView.as_view(), name='expenseperiod'),
+    path('periodtotal/<str:set>/<str:period>', views.PeriodTotalView.as_view(), name='period-total'),
 ]
 
 router.register('transactions', views.TransactionsViewSet, basename='transaction')
