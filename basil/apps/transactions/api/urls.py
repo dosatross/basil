@@ -7,6 +7,7 @@ router = DefaultRouter()
 
 urlpatterns = [
     path('periodtotal/<str:set>/<str:period>', views.PeriodTotalView.as_view(), name='period-total'),
+    path('categorytotal/<str:set>', views.CategoryTotalView.as_view(), name='category-total'),
 ]
 
 router.register('transactions', views.TransactionsViewSet, basename='transaction')

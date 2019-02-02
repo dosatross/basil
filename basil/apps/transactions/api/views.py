@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from basil.apps.transactions.models import Transaction
-from basil.apps.transactions.api.serializers import TransactionSerializer, PeriodTransactionSerializer
+from basil.apps.transactions.api.serializers import TransactionSerializer, PeriodTotalTransactionSerializer, CategoryTotalTransactionSerializer
 from basil.apps.categories.models import Category, CategoryGroup
 
 
@@ -64,9 +64,32 @@ class PeriodTotalView(APIView):
 		else:
 			return Response(status=status.HTTP_400_BAD_REQUEST)
 
-		q = Transaction.get_sum_over_period(
+		q = Transaction.total_over_period(
 			request.user,
 			PeriodTotalView.get_trunc(period),
 			category_set)
-		serializer = PeriodTransactionSerializer(q, many=True)
+		serializer = PeriodTotalTransactionSerializer(q, many=True)
+		return Response(serializer.data)
+
+class CategoryTotalView(APIView):
+	permission_classes = (permissions.IsAuthenticated,)
+
+	def get(self, request, set):
+		if set == 'income':
+			category_set = Category.get_income_categories()
+		elif set == 'expenses':
+			category_set = Category.get_expense_categories()
+		elif set == 'group':
+			group_name = self.request.query_params.get('group')
+			if not group_name or not CategoryGroup.objects.filter(name=group_name).first():
+				return Response(status=status.HTTP_400_BAD_REQUEST)
+			else:
+				category_set = CategoryGroup.objects.filter(name=group_name).first().categories.all()
+		else:
+			return Response(status=status.HTTP_400_BAD_REQUEST)
+		
+		q = Transaction.total_over_category(
+			request.user,
+			category_set)
+		serializer = CategoryTotalTransactionSerializer(q, many=True)
 		return Response(serializer.data)

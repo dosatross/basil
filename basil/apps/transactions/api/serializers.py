@@ -24,6 +24,19 @@ class TransactionSerializer(serializers.ModelSerializer):
 				'A transaction with positive amount cannot be added to a non internal debit category. Category: ' + str(data.get('category')) + ' Date: ' + str(data.get('date'))  + ' Amount: ' + str(data.get('amount')) + ' Description: ' + str(data.get('description')))
 		return data
 
-class PeriodTransactionSerializer(serializers.Serializer):
+class PeriodTotalTransactionSerializer(serializers.Serializer):
 	total = serializers.DecimalField(decimal_places=2, max_digits=11)
 	period = serializers.DateField()
+
+class CategoryTotalTransactionSerializer(serializers.Serializer):
+	total = serializers.DecimalField(decimal_places=2, max_digits=11)
+
+	category_display = serializers.SerializerMethodField()
+	category = serializers.SerializerMethodField()
+
+	def get_category(self, obj):
+		return obj['category__id']
+
+	def get_category_display(self, obj):
+		if obj['category__name'] and obj['category__subcategory']:
+			return obj['category__name'] + ' - ' + obj['category__subcategory']

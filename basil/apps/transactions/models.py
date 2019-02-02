@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Q, Sum
+from django.db.models import Q, Sum, Func, F
 from django.contrib.auth.models import User
 from basil.apps.categories.models import Category
 
@@ -15,9 +15,17 @@ class Transaction(models.Model):
 	class Meta:
 		ordering = ['-date']
 
-	def get_sum_over_period(user,trunc,categories):
+	def total_over_period(user,trunc,categories):
 		return Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
 			.annotate(period=trunc('date')) \
 			.values('period') \
 			.annotate(total=Sum('amount')) \
 			.order_by('-period')
+
+	def total_over_category(user,categories):
+		return Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
+			.values('category__id','category__name','category__subcategory') \
+			.annotate(total=Sum('amount')) \
+			.annotate(abs_total=Func(F('total'), function='ABS')) \
+			.order_by('-abs_total')
+			
