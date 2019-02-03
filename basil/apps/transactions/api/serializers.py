@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from basil.apps.transactions.models import Transaction
 from basil.apps.categories.models import Category
+from basil.apps.categories.api.serializers import SimpleCategorySerializer
 
 class TransactionSerializer(serializers.ModelSerializer):
 	category_display = serializers.SerializerMethodField()
@@ -44,3 +45,7 @@ class CategoryTotalTransactionSerializer(serializers.Serializer):
 class PeriodCategoryTotalTransactionSerializer(serializers.Serializer):
 	period = serializers.DateField()
 	categories = CategoryTotalTransactionSerializer(many=True)
+
+class CategoryPeriodTotalTransactionSerializer(serializers.Serializer):
+	category = SimpleCategorySerializer()
+	periods = PeriodTotalTransactionSerializer(many=True)

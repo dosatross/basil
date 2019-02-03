@@ -29,3 +29,13 @@ class CategorySerializer(serializers.ModelSerializer):
 			raise serializers.ValidationError('Only internal categories can have null is_credit')
 		return data
 
+class SimpleCategorySerializer(serializers.ModelSerializer):
+	category_display = serializers.SerializerMethodField()
+
+	class Meta:
+		model = Category
+		fields = ['id','category_display']
+
+	def get_category_display(self, obj):
+		return str(obj)
+

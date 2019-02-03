@@ -8,7 +8,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from basil.apps.transactions.models import Transaction
 from basil.apps.transactions.api.serializers import (TransactionSerializer, PeriodTotalTransactionSerializer, 
-											CategoryTotalTransactionSerializer, PeriodCategoryTotalTransactionSerializer)
+											CategoryTotalTransactionSerializer, PeriodCategoryTotalTransactionSerializer,
+											CategoryPeriodTotalTransactionSerializer)
 from basil.apps.categories.models import Category, CategoryGroup
 
 
@@ -65,7 +66,7 @@ class PeriodTotalView(APIView):
 		else:
 			return Response(status=status.HTTP_400_BAD_REQUEST)
 
-		q = Transaction.total_over_period(
+		q = Transaction.period_total(
 			request.user,
 			PeriodTotalView.get_trunc(period),
 			category_set)
@@ -76,20 +77,11 @@ class CategoryTotalView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 
 	def get(self, request, set):
-		if set == 'income':
-			category_set = Category.get_income_categories()
-		elif set == 'expenses':
-			category_set = Category.get_expense_categories()
-		elif set == 'group':
-			group_name = self.request.query_params.get('group')
-			if not group_name or not CategoryGroup.objects.filter(name=group_name).first():
-				return Response(status=status.HTTP_400_BAD_REQUEST)
-			else:
-				category_set = CategoryGroup.objects.filter(name=group_name).first().categories.all()
-		else:
-			return Response(status=status.HTTP_400_BAD_REQUEST)
+		category_set =  parse_set_query_param(set)
+		if not category_set:
+			Response(status=status.HTTP_400_BAD_REQUEST)
 
-		q = Transaction.total_over_category(
+		q = Transaction.category_total(
 			request.user,
 			category_set)
 		serializer = CategoryTotalTransactionSerializer(q, many=True)
@@ -99,22 +91,43 @@ class PeriodCategoryTotalView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 
 	def get(self, request, set, period):
-		if set == 'income':
-			category_set = Category.get_income_categories()
-		elif set == 'expenses':
-			category_set = Category.get_expense_categories()
-		elif set == 'group':
-			group_name = self.request.query_params.get('group')
-			if not group_name or not CategoryGroup.objects.filter(name=group_name).first():
-				return Response(status=status.HTTP_400_BAD_REQUEST)
-			else:
-				category_set = CategoryGroup.objects.filter(name=group_name).first().categories.all()
-		else:
-			return Response(status=status.HTTP_400_BAD_REQUEST)
+		category_set =  parse_set_query_param(set)
+		if not category_set:
+			Response(status=status.HTTP_400_BAD_REQUEST)
 
-		q = Transaction.total_over_period_and_categories(
+		q = Transaction.period_category_total(
 			request.user,
 			PeriodTotalView.get_trunc(period),
 			category_set)
 		serializer = PeriodCategoryTotalTransactionSerializer(q, many=True)
 		return Response(serializer.data)
+
+class CategoryPeriodTotalView(APIView):
+	permission_classes = (permissions.IsAuthenticated,)
+
+	def get(self, request, set, period):
+		category_set =  parse_set_query_param(set)
+		if not category_set:
+			Response(status=status.HTTP_400_BAD_REQUEST)
+
+		q = Transaction.category_period_total(
+			request.user,
+			PeriodTotalView.get_trunc(period),
+			category_set)
+		serializer = CategoryPeriodTotalTransactionSerializer(q, many=True)
+		return Response(serializer.data)
+
+def parse_set_query_param(set):
+	if set == 'income':
+		category_set = Category.get_income_categories()
+	elif set == 'expenses':
+		category_set = Category.get_expense_categories()
+	elif set == 'group':
+		group_name = self.request.query_params.get('group')
+		if not group_name or not CategoryGroup.objects.filter(name=group_name).first():
+			return None
+		else:
+			category_set = CategoryGroup.objects.filter(name=group_name).first().categories.all()
+	else:
+		return None
+	return category_set

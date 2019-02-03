@@ -15,23 +15,25 @@ class Transaction(models.Model):
 	class Meta:
 		ordering = ['-date']
 
-
-
-	def total_over_period(user,trunc,categories):
+	def period_total(user,trunc,categories):
 		return Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
 			.annotate(period=trunc('date')) \
 			.values('period') \
 			.annotate(total=Sum('amount')) \
 			.order_by('-period')
 
-	def total_over_category(user,categories):
+	def category_total(user,categories):
 		return Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
 			.values('category__id','category__name','category__subcategory') \
 			.annotate(total=Sum('amount')) \
 			.annotate(abs_total=Func(F('total'), function='ABS')) \
 			.order_by('-abs_total')
 			
-	def total_over_period_and_categories(user,trunc,categories):
+	def period_category_total(user,trunc,categories):
+		""" 
+		with categories nested in periods
+		does not include zeroed totals
+		"""
 		q = Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
 			.annotate(period=trunc('date')) \
 			.values('period','category__id','category__name','category__subcategory') \
@@ -41,6 +43,34 @@ class Transaction(models.Model):
 
 		dates = q.values("period").annotate(Count("period")).order_by() # get distinct dates
 
-		# get category totals nested in periods
-		return [{'period': date['period'], \
+		# nest category totals in date period
+		return [{'period': date['period'], 
 				'categories':[o for o in q if o in q.filter(period=date['period'])]} for date in dates]
+
+
+	def category_period_total(user,trunc,categories):
+		""" 
+		with periods nested in categories
+		includes zeroed totals
+		"""
+		q = Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
+			.annotate(period=trunc('date')) \
+			.values('period','category__id') \
+			.annotate(total=Sum('amount')) \
+			.annotate(abs_total=Func(F('total'), function='ABS')) \
+			.order_by('-period','-abs_total','-category__id')
+
+		dates = q.values("period").annotate(Count("period")).order_by() # get distinct dates
+
+		# nest date period totals in categories
+		return [{'category': category, 'periods': \
+			[{'period': date['period'],'total': Transaction.total_or_zero(q,category,date['period'])} \
+				for date in dates]} for category in categories]
+
+	def total_or_zero(q,category,period):
+		o = q.filter(category__id=category.id,period=period).first()
+		if not o:
+			return 0
+		return o['total']
+
+
