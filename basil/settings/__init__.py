@@ -5,6 +5,5 @@ include(
     'base.py',
     'rest.py',
     'database.py',
-    'dev.py',
     optional('local_settings.py')
 )

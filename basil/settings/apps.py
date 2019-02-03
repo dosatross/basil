@@ -12,4 +12,5 @@ INSTALLED_APPS = [
     'basil.apps.accounts',
     'basil.apps.transactions',
     'basil.apps.categories',
+    'corsheaders',
 ]
