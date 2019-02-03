@@ -22,12 +22,15 @@ class Transaction(models.Model):
 			.annotate(total=Sum('amount')) \
 			.order_by('-period')
 
-	def category_total(user,categories):
-		return Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
+	def category_total(user,categories,top):
+		q = Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
 			.values('category__id','category__name','category__subcategory') \
 			.annotate(total=Sum('amount')) \
 			.annotate(abs_total=Func(F('total'), function='ABS')) \
 			.order_by('-abs_total')
+		if top:
+			return q[:top]
+		return q
 			
 	def period_category_total(user,trunc,categories):
 		""" 
@@ -72,5 +75,3 @@ class Transaction(models.Model):
 		if not o:
 			return 0
 		return o['total']
-
-

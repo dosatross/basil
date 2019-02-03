@@ -60,13 +60,19 @@ class CategoryTotalView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 
 	def get(self, request, set):
+		top_s = request.query_params.get('top')
+		top = None
+		if top_s and top_s.isdigit():
+			top = int(top_s) 
+
 		category_set =  parse_set_query_param(set,request)
 		if not category_set:
 			Response(status=status.HTTP_400_BAD_REQUEST)
 
 		q = Transaction.category_total(
 			request.user,
-			category_set)
+			category_set,
+			top)
 		serializer = CategoryTotalTransactionSerializer(q, many=True)
 		return Response(serializer.data)
 
