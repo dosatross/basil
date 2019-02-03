@@ -29,10 +29,11 @@ class Category(models.Model):
 		return '%s - %s' % (self.name, self.subcategory)
 
 	def get_expense_categories():
-		return Category.objects.filter(Q(is_internal=False)		  # remove internals
-			& Q(Q(is_credit=False) 								  # get debits
-				| Q(Q(is_credit=True) & Q(is_adjustment=True))))  # get credit adjustments
+		return Category.objects.filter(
+			Q(is_internal=False) & Q(is_credit=False) & Q(is_adjustment=False) |  # get non internal debits
+			Q(is_internal=False) & Q(Q(is_credit=True) & Q(is_adjustment=True)))  # make adjustments
+
 	def get_income_categories():
-		return Category.objects.filter(Q(is_internal=False) 	  # remove internals
-			& Q(Q(is_credit=True) 								  # get credits
-				| Q(Q(is_credit=False) & Q(is_adjustment=True)))) # get debit adjustments
+		return Category.objects.filter(
+			Q(is_internal=False) & Q(is_credit=True) & Q(is_adjustment=False) |	   # get non internal credits
+			Q(is_internal=False) & Q(Q(is_credit=False) & Q(is_adjustment=True)))  # make adjustments
