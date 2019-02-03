@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Q, Sum, Func, F
+from django.db.models import Q, Sum, Func, F, Count
 from django.contrib.auth.models import User
 from basil.apps.categories.models import Category
 
@@ -15,6 +15,8 @@ class Transaction(models.Model):
 	class Meta:
 		ordering = ['-date']
 
+
+
 	def total_over_period(user,trunc,categories):
 		return Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
 			.annotate(period=trunc('date')) \
@@ -29,3 +31,16 @@ class Transaction(models.Model):
 			.annotate(abs_total=Func(F('total'), function='ABS')) \
 			.order_by('-abs_total')
 			
+	def total_over_period_and_categories(user,trunc,categories):
+		q = Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
+			.annotate(period=trunc('date')) \
+			.values('period','category__id','category__name','category__subcategory') \
+			.annotate(total=Sum('amount')) \
+			.annotate(abs_total=Func(F('total'), function='ABS')) \
+			.order_by('-period','-abs_total','-category__name','-category__subcategory')
+
+		dates = q.values("period").annotate(Count("period")).order_by() # get distinct dates
+
+		# get category totals nested in periods
+		return [{'period': date['period'], \
+				'categories':[o for o in q if o in q.filter(period=date['period'])]} for date in dates]

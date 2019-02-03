@@ -40,3 +40,7 @@ class CategoryTotalTransactionSerializer(serializers.Serializer):
 	def get_category_display(self, obj):
 		if obj['category__name'] and obj['category__subcategory']:
 			return obj['category__name'] + ' - ' + obj['category__subcategory']
+
+class PeriodCategoryTotalTransactionSerializer(serializers.Serializer):
+	period = serializers.DateField()
+	categories = CategoryTotalTransactionSerializer(many=True)
