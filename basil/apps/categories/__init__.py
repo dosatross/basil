@@ -1,0 +1,1 @@
+default_app_config = 'basil.apps.categories.apps.CategoriesConfig'
