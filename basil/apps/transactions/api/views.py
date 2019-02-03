@@ -41,34 +41,17 @@ class PeriodTotalView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 	valid = ['w','m','q','y']
 
-	@classmethod
-	def get_trunc(cls,period):
-		if period == 'w': trunc = TruncWeek
-		if period == 'm': trunc = TruncMonth
-		if period == 'q': trunc = TruncQuarter
-		if period == 'y': trunc = TruncYear
-		return trunc
-
 	def get(self, request, set, period):
-		if period not in self.valid:
+		if period not in PeriodTotalView.valid:
 			return Response(status=status.HTTP_400_BAD_REQUEST)
 
-		if set == 'income':
-			category_set = Category.get_income_categories()
-		elif set == 'expenses':
-			category_set = Category.get_expense_categories()
-		elif set == 'group':
-			group_name = self.request.query_params.get('group')
-			if not group_name or not CategoryGroup.objects.filter(name=group_name).first():
-				return Response(status=status.HTTP_400_BAD_REQUEST)
-			else:
-				category_set = CategoryGroup.objects.filter(name=group_name).first().categories.all()
-		else:
-			return Response(status=status.HTTP_400_BAD_REQUEST)
+		category_set =  parse_set_query_param(set,request)
+		if not category_set:
+			Response(status=status.HTTP_400_BAD_REQUEST)
 
 		q = Transaction.period_total(
 			request.user,
-			PeriodTotalView.get_trunc(period),
+			get_trunc(period),
 			category_set)
 		serializer = PeriodTotalTransactionSerializer(q, many=True)
 		return Response(serializer.data)
@@ -77,7 +60,7 @@ class CategoryTotalView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 
 	def get(self, request, set):
-		category_set =  parse_set_query_param(set)
+		category_set =  parse_set_query_param(set,request)
 		if not category_set:
 			Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -91,13 +74,16 @@ class PeriodCategoryTotalView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 
 	def get(self, request, set, period):
-		category_set =  parse_set_query_param(set)
+		if period not in PeriodTotalView.valid:
+			return Response(status=status.HTTP_400_BAD_REQUEST)
+
+		category_set =  parse_set_query_param(set,request)
 		if not category_set:
 			Response(status=status.HTTP_400_BAD_REQUEST)
 
 		q = Transaction.period_category_total(
 			request.user,
-			PeriodTotalView.get_trunc(period),
+			get_trunc(period),
 			category_set)
 		serializer = PeriodCategoryTotalTransactionSerializer(q, many=True)
 		return Response(serializer.data)
@@ -106,24 +92,34 @@ class CategoryPeriodTotalView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 
 	def get(self, request, set, period):
-		category_set =  parse_set_query_param(set)
+		if period not in PeriodTotalView.valid:
+			return Response(status=status.HTTP_400_BAD_REQUEST)
+
+		category_set =  parse_set_query_param(set,request)
 		if not category_set:
 			Response(status=status.HTTP_400_BAD_REQUEST)
 
 		q = Transaction.category_period_total(
 			request.user,
-			PeriodTotalView.get_trunc(period),
+			get_trunc(period),
 			category_set)
 		serializer = CategoryPeriodTotalTransactionSerializer(q, many=True)
 		return Response(serializer.data)
 
-def parse_set_query_param(set):
+def get_trunc(period):
+	if period == 'w': trunc = TruncWeek
+	if period == 'm': trunc = TruncMonth
+	if period == 'q': trunc = TruncQuarter
+	if period == 'y': trunc = TruncYear
+	return trunc
+
+def parse_set_query_param(set,request):
 	if set == 'income':
 		category_set = Category.get_income_categories()
 	elif set == 'expenses':
 		category_set = Category.get_expense_categories()
 	elif set == 'group':
-		group_name = self.request.query_params.get('group')
+		group_name = request.query_params.get('group')
 		if not group_name or not CategoryGroup.objects.filter(name=group_name).first():
 			return None
 		else:

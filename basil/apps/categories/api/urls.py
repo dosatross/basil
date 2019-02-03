@@ -7,4 +7,5 @@ router = DefaultRouter()
 router.register('categories', views.CategoryViewSet, base_name="category")
 router.register('groups', views.CategoryGroupViewSet, base_name="group")
 
+
 urlpatterns = router.urls
