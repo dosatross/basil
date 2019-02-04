@@ -1,4 +1,6 @@
 coreapi==2.3.3
+datedelta==1.2
+datetime-truncate==1.1.0
 Django==2.1.5
 djangorestframework==3.9.0
 django-filter==2.0.0
@@ -6,5 +8,6 @@ django-split-settings==0.3.0
 django-extensions==2.1.4
 django-cors-headers==2.4.0
 Markdown==3.0.1
+pandas==0.24.1
 psycopg2==2.7.6.1
 pygments==2.3.1

@@ -1,6 +1,5 @@
 import datetime
 from django.db.models import Q
-from django.db.models.functions import TruncWeek, TruncMonth, TruncQuarter, TruncYear
 from rest_framework import viewsets, generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -41,8 +40,8 @@ class PeriodTotalView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 	valid = ['w','m','q','y']
 
-	def get(self, request, set, period):
-		if period not in PeriodTotalView.valid:
+	def get(self, request, set, period_len):
+		if period_len not in PeriodTotalView.valid:
 			return Response(status=status.HTTP_400_BAD_REQUEST)
 
 		category_set =  parse_set_query_param(set,request)
@@ -51,7 +50,7 @@ class PeriodTotalView(APIView):
 
 		q = Transaction.period_total(
 			request.user,
-			get_trunc(period),
+			period_len,
 			category_set)
 		serializer = PeriodTotalTransactionSerializer(q, many=True)
 		return Response(serializer.data)
@@ -79,8 +78,8 @@ class CategoryTotalView(APIView):
 class PeriodCategoryTotalView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 
-	def get(self, request, set, period):
-		if period not in PeriodTotalView.valid:
+	def get(self, request, set, period_len):
+		if period_len not in PeriodTotalView.valid:
 			return Response(status=status.HTTP_400_BAD_REQUEST)
 
 		category_set =  parse_set_query_param(set,request)
@@ -89,7 +88,7 @@ class PeriodCategoryTotalView(APIView):
 
 		q = Transaction.period_category_total(
 			request.user,
-			get_trunc(period),
+			period_len,
 			category_set)
 		serializer = PeriodCategoryTotalTransactionSerializer(q, many=True)
 		return Response(serializer.data)
@@ -97,8 +96,8 @@ class PeriodCategoryTotalView(APIView):
 class CategoryPeriodTotalView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 
-	def get(self, request, set, period):
-		if period not in PeriodTotalView.valid:
+	def get(self, request, set, period_len):
+		if period_len not in PeriodTotalView.valid:
 			return Response(status=status.HTTP_400_BAD_REQUEST)
 
 		category_set =  parse_set_query_param(set,request)
@@ -107,17 +106,10 @@ class CategoryPeriodTotalView(APIView):
 
 		q = Transaction.category_period_total(
 			request.user,
-			get_trunc(period),
+			period_len,
 			category_set)
 		serializer = CategoryPeriodTotalTransactionSerializer(q, many=True)
 		return Response(serializer.data)
-
-def get_trunc(period):
-	if period == 'w': trunc = TruncWeek
-	if period == 'm': trunc = TruncMonth
-	if period == 'q': trunc = TruncQuarter
-	if period == 'y': trunc = TruncYear
-	return trunc
 
 def parse_set_query_param(set,request):
 	if set == 'income':
