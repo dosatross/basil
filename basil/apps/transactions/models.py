@@ -1,12 +1,10 @@
 import datedelta
-import datetime as dt
 import pandas as pd
-from datetime_truncate import truncate
 from django.db import models
 from django.db.models import Q, Sum, Func, F, Count
-from django.db.models.functions import TruncWeek, TruncMonth, TruncQuarter, TruncYear
 from django.contrib.auth.models import User
 from basil.apps.categories.models import Category
+from basil.apps.transactions.utils import *
 
 
 class Transaction(models.Model):
@@ -34,14 +32,16 @@ class Transaction(models.Model):
 
 
 
-	def category_total(user,categories,top):
+	def category_total(user,categories,date_range,top=None):
 		q = Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
+			.filter(date__range=[date_range['start'].isoformat(), date_range['end'].isoformat()]) \
 			.values('category__id') \
 			.annotate(total=Sum('amount')) \
 			.annotate(abs_total=Func(F('total'), function='ABS')) \
 			.order_by('-abs_total')
 
 		result = [{'category': category,'total': total_or_zero_c(q,category) } for category in categories]
+		result = sorted(result, key=lambda x: abs(x['total']),reverse=True) 
 		if top:
 			return result[:top]
 		return result
@@ -80,46 +80,3 @@ class Transaction(models.Model):
 				for date in dates]} for category in categories]
 
 
-def total_or_zero(q,category,period_starting):
-	o = q.filter(category__id=category.id,period_starting=period_starting).first()
-	if not o:
-		return 0
-	return o['total']
-
-def total_or_zero_p(q,period_starting):
-	o = q.filter(period_starting=period_starting).first()
-	if not o:
-		return 0
-	return o['total']
-
-def total_or_zero_c(q,category):
-	o = q.filter(category__id=category.id).first()
-	if not o:
-		return 0
-	return o['total']
-
-def date_start_end():
-	start = Transaction.objects.earliest('date').date
-	end = Transaction.objects.latest('date').date
-	return start, end
-
-def date_starting_periods(period_len):
-	start, end = date_start_end()
-	start_trunc = truncate(dt.datetime.combine(start, dt.datetime.min.time()), get_py_trunc(period_len))
-	end_trunc = truncate(dt.datetime.combine(end, dt.datetime.min.time()), get_py_trunc(period_len))
-	date_index = pd.period_range(start=start_trunc, end=end_trunc, freq=period_len.upper()).to_timestamp()
-	return date_index.date
-
-def get_py_trunc(period_len):
-	if period_len == 'w': trunc = 'week'
-	if period_len == 'm': trunc = 'month'
-	if period_len == 'q': trunc = 'quarter'
-	if period_len == 'y': trunc = 'year'
-	return trunc
-
-def get_trunc(period_len):
-	if period_len == 'w': trunc = TruncWeek
-	if period_len == 'm': trunc = TruncMonth
-	if period_len == 'q': trunc = TruncQuarter
-	if period_len == 'y': trunc = TruncYear
-	return trunc

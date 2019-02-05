@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime as dt
 from django.db.models import Q
 from rest_framework import viewsets, generics, status, permissions
 from rest_framework.response import Response
@@ -6,6 +6,8 @@ from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from basil.apps.transactions.models import Transaction
+from basil.apps.transactions.utils import date_start_end
+from basil.apps.transactions.constants import ISO_DATE_FORMAT, PERIOD_WEEK, PERIOD_MONTH, PERIOD_QUARTER,PERIOD_YEAR, PERIOD_LENGTHS
 from basil.apps.transactions.api.serializers import (TransactionSerializer, PeriodTotalTransactionSerializer, 
 											CategoryTotalTransactionSerializer, PeriodCategoryTotalTransactionSerializer,
 											CategoryPeriodTotalTransactionSerializer)
@@ -38,10 +40,9 @@ class ExpensesViewSet(TransactionsViewSet):
 
 class PeriodTotalView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
-	valid = ['w','m','q','y']
 
 	def get(self, request, set, period_len):
-		if period_len not in PeriodTotalView.valid:
+		if period_len not in PERIOD_LENGTHS:
 			return Response(status=status.HTTP_400_BAD_REQUEST)
 
 		category_set =  parse_set_query_param(set,request)
@@ -64,13 +65,23 @@ class CategoryTotalView(APIView):
 		if top_s and top_s.isdigit():
 			top = int(top_s) 
 
+		date_range_s = request.query_params.get('date_range')
+		date_range = None
+		if date_range_s:
+			date_range = parse_date_range(date_range_s)
+			if not date_range:
+				return Response(status=status.HTTP_400_BAD_REQUEST)
+		else:
+			date_range = date_start_end()
+
 		category_set =  parse_set_query_param(set,request)
 		if not category_set:
-			Response(status=status.HTTP_400_BAD_REQUEST)
+			return Response(status=status.HTTP_400_BAD_REQUEST)
 
 		q = Transaction.category_total(
 			request.user,
 			category_set,
+			date_range,
 			top)
 		serializer = CategoryTotalTransactionSerializer(q, many=True)
 		return Response(serializer.data)
@@ -79,7 +90,7 @@ class PeriodCategoryTotalView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 
 	def get(self, request, set, period_len):
-		if period_len not in PeriodTotalView.valid:
+		if period_len not in PERIOD_LENGTHS:
 			return Response(status=status.HTTP_400_BAD_REQUEST)
 
 		category_set =  parse_set_query_param(set,request)
@@ -97,7 +108,7 @@ class CategoryPeriodTotalView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 
 	def get(self, request, set, period_len):
-		if period_len not in PeriodTotalView.valid:
+		if period_len not in PERIOD_LENGTHS:
 			return Response(status=status.HTTP_400_BAD_REQUEST)
 
 		category_set =  parse_set_query_param(set,request)
@@ -110,6 +121,8 @@ class CategoryPeriodTotalView(APIView):
 			category_set)
 		serializer = CategoryPeriodTotalTransactionSerializer(q, many=True)
 		return Response(serializer.data)
+
+
 
 def parse_set_query_param(set,request):
 	if set == 'income':
@@ -125,3 +138,14 @@ def parse_set_query_param(set,request):
 	else:
 		return None
 	return category_set
+
+def parse_date_range(date_range):
+	str_arr = date_range.split(':')
+	if len(str_arr) != 2:
+		return None
+	try :
+		start = dt.strptime(str_arr[0],ISO_DATE_FORMAT).date()
+		end = dt.strptime(str_arr[1],ISO_DATE_FORMAT).date()
+	except ValueError:
+		return None
+	return {'start':start,'end':end}
