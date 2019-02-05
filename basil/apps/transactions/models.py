@@ -1,10 +1,9 @@
-import datedelta
-import pandas as pd
 from django.db import models
 from django.db.models import Q, Sum, Func, F, Count
 from django.contrib.auth.models import User
 from basil.apps.categories.models import Category
 from basil.apps.transactions.utils import *
+from basil.apps.transactions.constants import DJ_TRUNC
 
 
 class Transaction(models.Model):
@@ -21,7 +20,7 @@ class Transaction(models.Model):
 
 	def period_total(user,period_len,categories):
 		q = Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
-			.annotate(period_starting=get_trunc(period_len)('date')) \
+			.annotate(period_starting=DJ_TRUNC[period_len]('date')) \
 			.values('period_starting') \
 			.annotate(total=Sum('amount')) \
 			.order_by('-period_starting')
@@ -50,7 +49,7 @@ class Transaction(models.Model):
 	def period_category_total(user,period_len,categories):
 		""" with category totals nested in periods """
 		q = Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
-			.annotate(period_starting=get_trunc(period_len)('date')) \
+			.annotate(period_starting=DJ_TRUNC[period_len]('date')) \
 			.values('period_starting','category__id') \
 			.annotate(total=Sum('amount')) \
 			.annotate(abs_total=Func(F('total'), function='ABS')) \
@@ -67,7 +66,7 @@ class Transaction(models.Model):
 		with period totals nested in categories
 		"""
 		q = Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
-			.annotate(period_starting=get_trunc(period_len)('date')) \
+			.annotate(period_starting=DJ_TRUNC[period_len]('date')) \
 			.values('period_starting','category__id') \
 			.annotate(total=Sum('amount')) \
 			.annotate(abs_total=Func(F('total'), function='ABS')) \
