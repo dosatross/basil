@@ -70,7 +70,8 @@ class Transaction(models.Model):
 			.values('period_starting','category__id') \
 			.annotate(total=Sum('amount')) \
 			.annotate(abs_total=Func(F('total'), function='ABS')) \
-			.order_by('-period_starting','-abs_total','-category__id')
+			.order_by('-period_starting','-abs_total','-category__id') 
+			
 
 		dates = date_starting_periods(period_len)
 

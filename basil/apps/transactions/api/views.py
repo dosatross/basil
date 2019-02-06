@@ -47,7 +47,7 @@ class PeriodTotalView(APIView):
 
 		category_set =  parse_set_query_param(set,request)
 		if not category_set:
-			Response(status=status.HTTP_400_BAD_REQUEST)
+			return Response(status=status.HTTP_400_BAD_REQUEST)
 
 		q = Transaction.period_total(
 			request.user,
@@ -95,7 +95,7 @@ class PeriodCategoryTotalView(APIView):
 
 		category_set =  parse_set_query_param(set,request)
 		if not category_set:
-			Response(status=status.HTTP_400_BAD_REQUEST)
+			return Response(status=status.HTTP_400_BAD_REQUEST)
 
 		q = Transaction.period_category_total(
 			request.user,
@@ -113,7 +113,7 @@ class CategoryPeriodTotalView(APIView):
 
 		category_set =  parse_set_query_param(set,request)
 		if not category_set:
-			Response(status=status.HTTP_400_BAD_REQUEST)
+			return Response(status=status.HTTP_400_BAD_REQUEST)
 
 		q = Transaction.category_period_total(
 			request.user,
@@ -125,6 +125,7 @@ class CategoryPeriodTotalView(APIView):
 
 
 def parse_set_query_param(set,request):
+	# get base category set
 	if set == 'income':
 		category_set = Category.get_income_categories()
 	elif set == 'expenses':
@@ -135,8 +136,35 @@ def parse_set_query_param(set,request):
 			return None
 		else:
 			category_set = CategoryGroup.objects.filter(name=group_name).first().categories.all()
+	elif set == 'transactions':
+		category_set = Category.objects.all()
 	else:
 		return None
+
+	include = request.query_params.get('include')
+	if include:
+		names = include.split(',')
+		include_ids = []
+		for name in names:
+			group = CategoryGroup.objects.filter(name=name).first()
+			if not group:
+				return None
+			include_ids += [c.id for c in group.categories.all()]
+		base_ids = [c.id for c in category_set]
+		include_ids += base_ids
+		category_set = Category.objects.filter(id__in=include_ids) 
+
+	exclude = request.query_params.get('exclude')
+	if exclude:
+		names = exclude.split(',')
+		exclude_ids = []
+		for name in names:
+			group = CategoryGroup.objects.filter(name=name).first()
+			if not group:
+				return None
+			exclude_ids += [c.id for c in group.categories.all()]
+		category_set = category_set.exclude(id__in=exclude_ids)
+
 	return category_set
 
 def parse_date_range(date_range):
