@@ -9,8 +9,11 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'django_extensions',
+    'debug_toolbar',
+    'silk',
+    'corsheaders',
     'basil.apps.accounts',
     'basil.apps.transactions',
     'basil.apps.categories',
-    'corsheaders',
+    
 ]

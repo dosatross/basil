@@ -22,5 +22,7 @@ Running commands without parameters will import sample data
 
 `python ./manage.py import_users` imports a default superuser, admin and application user: 'su', 'admin', 'demo' (same username and password)
 
+### Docs
 
+`/docs/` to see API documentation
 

@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.conf import settings
 from django.urls import path, include, re_path
 from rest_framework.documentation import include_docs_urls
 
@@ -18,3 +19,12 @@ api_urlpatterns = [
 urlpatterns += [
 	re_path('api/', include(api_urlpatterns))
 ]
+
+
+
+if settings.DEBUG:
+	import debug_toolbar
+	urlpatterns += [
+		path('__debug__/', include(debug_toolbar.urls)),
+		path('silk/', include('silk.urls', namespace='silk')),
+	]
