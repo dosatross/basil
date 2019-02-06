@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 
 class CategoryGroup(models.Model):
-	name = models.CharField(max_length=50)
+	name = models.CharField(max_length=50,unique=True)
 	description = models.CharField(max_length=150, null=True)
 
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
