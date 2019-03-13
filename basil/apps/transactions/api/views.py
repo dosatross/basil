@@ -122,6 +122,11 @@ class CategoryPeriodTotalView(APIView):
 		serializer = CategoryPeriodTotalTransactionSerializer(q, many=True)
 		return Response(serializer.data)
 
+class DateRange(APIView):
+	permission_classes = (permissions.IsAuthenticated,)
+
+	def get(self, request):
+		return Response(date_start_end())
 
 
 def parse_set_query_param(set,request):

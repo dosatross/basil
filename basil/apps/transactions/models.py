@@ -17,13 +17,12 @@ class Transaction(models.Model):
 	class Meta:
 		ordering = ['-date']
 
-
 	def period_total(user,period_len,categories):
-		q = Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
-			.annotate(period_starting=DJ_TRUNC[period_len]('date')) \
-			.values('period_starting') \
-			.annotate(total=Sum('amount')) \
-			.order_by('-period_starting')
+		q = list(Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
+					.annotate(period_starting=DJ_TRUNC[period_len]('date')) \
+					.values('period_starting') \
+					.annotate(total=Sum('amount')) \
+					.order_by('-period_starting'))
 
 		dates = date_starting_periods(period_len)
 
@@ -32,12 +31,12 @@ class Transaction(models.Model):
 
 
 	def category_total(user,categories,date_range,top=None):
-		q = Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
-			.filter(date__range=[date_range['start'].isoformat(), date_range['end'].isoformat()]) \
-			.values('category__id') \
-			.annotate(total=Sum('amount')) \
-			.annotate(abs_total=Func(F('total'), function='ABS')) \
-			.order_by('-abs_total')
+		q = list(Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
+					.filter(date__range=[date_range['start'].isoformat(), date_range['end'].isoformat()]) \
+					.values('category__id') \
+					.annotate(total=Sum('amount')) \
+					.annotate(abs_total=Func(F('total'), function='ABS')) \
+					.order_by('-abs_total'))
 
 		result = [{'category': category,'total': total_or_zero_c(q,category) } for category in categories]
 		result = sorted(result, key=lambda x: abs(x['total']),reverse=True) 
@@ -48,12 +47,12 @@ class Transaction(models.Model):
 
 	def period_category_total(user,period_len,categories):
 		""" with category totals nested in periods """
-		q = Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
-			.annotate(period_starting=DJ_TRUNC[period_len]('date')) \
-			.values('period_starting','category__id') \
-			.annotate(total=Sum('amount')) \
-			.annotate(abs_total=Func(F('total'), function='ABS')) \
-			.order_by('-period_starting','-abs_total','-category__id')
+		q = list(Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
+					.annotate(period_starting=DJ_TRUNC[period_len]('date')) \
+					.values('period_starting','category__id') \
+					.annotate(total=Sum('amount')) \
+					.annotate(abs_total=Func(F('total'), function='ABS')) \
+					.order_by('-period_starting','-abs_total','-category__id'))
 
 		dates = date_starting_periods(period_len)
 
@@ -65,12 +64,12 @@ class Transaction(models.Model):
 		""" 
 		with period totals nested in categories
 		"""
-		q = Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
-			.annotate(period_starting=DJ_TRUNC[period_len]('date')) \
-			.values('period_starting','category__id') \
-			.annotate(total=Sum('amount')) \
-			.annotate(abs_total=Func(F('total'), function='ABS')) \
-			.order_by('-period_starting','-abs_total','-category__id') 
+		q = list(Transaction.objects.filter(Q(category__in=categories) & Q(user=user)) \
+					.annotate(period_starting=DJ_TRUNC[period_len]('date')) \
+					.values('period_starting','category__id') \
+					.annotate(total=Sum('amount')) \
+					.annotate(abs_total=Func(F('total'), function='ABS')) \
+					.order_by('-period_starting','-abs_total','-category__id'))
 			
 
 		dates = date_starting_periods(period_len)

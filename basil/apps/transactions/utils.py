@@ -6,24 +6,25 @@ from basil.apps.transactions.constants import PY_TRUNC, PERIOD_WEEK, PERIOD_MONT
 
 
 def total_or_zero(q,category,period_starting):
-	o = q.filter(category__id=category.id,period_starting=period_starting).first()
-	if not o:
-		return 0
-	return o['total']
+	for o in q:
+		if o['category__id'] == category.id and o['period_starting'] == period_starting:
+			return o['total']
+	return 0
 
 def total_or_zero_p(q,period_starting):
-	o = q.filter(period_starting=period_starting).first()
-	if not o:
-		return 0
-	return o['total']
+	for o in q:
+		if o['period_starting'] == period_starting:
+			return o['total']
+	return 0
 
 def total_or_zero_c(q,category):
-	o = q.filter(category__id=category.id).first()
-	if not o:
-		return 0
-	return o['total']
-
+	for o in q:
+		if o['category__id'] == category.id:
+			return o['total']
+	return 0
+	
 def date_start_end():
+	# BUG: filter by user
 	start = t_models.Transaction.objects.earliest('date').date
 	end = t_models.Transaction.objects.latest('date').date
 	return {'start':start,'end':end}
