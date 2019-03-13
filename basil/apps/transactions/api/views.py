@@ -72,7 +72,7 @@ class CategoryTotalView(APIView):
 			if not date_range:
 				return Response(status=status.HTTP_400_BAD_REQUEST)
 		else:
-			date_range = date_start_end()
+			date_range = date_start_end(request.user)
 
 		category_set =  parse_set_query_param(set,request)
 		if not category_set:
@@ -126,7 +126,7 @@ class DateRange(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 
 	def get(self, request):
-		return Response(date_start_end())
+		return Response(date_start_end(request.user))
 
 
 def parse_set_query_param(set,request):

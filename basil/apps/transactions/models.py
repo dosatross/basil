@@ -24,7 +24,7 @@ class Transaction(models.Model):
 					.annotate(total=Sum('amount')) \
 					.order_by('-period_starting'))
 
-		dates = date_starting_periods(period_len)
+		dates = date_starting_periods(user,period_len)
 
 		return [{'period_starting': date,'total': total_or_zero_p(q,date) } for date in dates]
 
@@ -54,7 +54,7 @@ class Transaction(models.Model):
 					.annotate(abs_total=Func(F('total'), function='ABS')) \
 					.order_by('-period_starting','-abs_total','-category__id'))
 
-		dates = date_starting_periods(period_len)
+		dates = date_starting_periods(user,period_len)
 
 		return [{'period_starting': date, 'categories': 
 			[{'category': category,'total': total_or_zero(q,category,date)} 
@@ -72,7 +72,7 @@ class Transaction(models.Model):
 					.order_by('-period_starting','-abs_total','-category__id'))
 			
 
-		dates = date_starting_periods(period_len)
+		dates = date_starting_periods(user,period_len)
 
 		return [{'category': category, 'periods_starting': 
 			[{'period_starting': date,'total': total_or_zero(q,category,date)} 
