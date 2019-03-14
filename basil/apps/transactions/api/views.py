@@ -1,5 +1,5 @@
 from datetime import datetime as dt
-from django.db.models import Q
+from django.db.models import Q, Func, F
 from rest_framework import viewsets, generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -24,19 +24,22 @@ class TransactionsViewSet(viewsets.ModelViewSet):
 
 	def get_queryset(self):
 		user = self.request.user
-		return Transaction.objects.filter(user=user)
+		queryset = Transaction.objects.filter(user=user)
+		return filter_transaction_query_params(queryset,self.request.query_params)
 
 class IncomeViewSet(TransactionsViewSet):
 
 	def get_queryset(self):
 		user = self.request.user
-		return Transaction.objects.filter(Q(category__in=Category.get_income_categories()) & Q(user=user))
+		queryset = Transaction.objects.filter(Q(category__in=Category.get_income_categories()) & Q(user=user))
+		return filter_transaction_query_params(queryset,self.request.query_params)
 
 class ExpensesViewSet(TransactionsViewSet):
 
 	def get_queryset(self):
 		user = self.request.user
-		return Transaction.objects.filter(Q(category__in=Category.get_expense_categories()) & Q(user=user))
+		queryset = Transaction.objects.filter(Q(category__in=Category.get_expense_categories()) & Q(user=user))
+		return filter_transaction_query_params(queryset,self.request.query_params)
 
 class PeriodTotalView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
@@ -182,3 +185,15 @@ def parse_date_range(date_range):
 	except ValueError:
 		return None
 	return {'start':start,'end':end}
+
+def filter_transaction_query_params(queryset,query_params):
+	date_range_s = query_params.get('date_range')
+	top_s = query_params.get('top')
+
+	if date_range_s:
+		date_range = parse_date_range(date_range_s)
+		queryset = queryset.filter(date__range=[date_range['start'], date_range['end']])
+	if top_s and top_s.isdigit():
+		top = int(top_s) 
+		queryset = queryset.annotate(abs=Func(F('amount'), function='ABS')).order_by('-abs')[:top]
+	return queryset
