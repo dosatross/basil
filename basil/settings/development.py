@@ -2,6 +2,8 @@ from basil.settings.base import *
 
 DEBUG = True
 
+SECRET_KEY = ')*q(vxory=r^j(gtdrdg*3*nbc$k%j@u&^rq&&(5v3^z7@h-%)'
+
 INSTALLED_APPS += [
     'debug_toolbar',
     'silk',

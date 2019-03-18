@@ -10,6 +10,9 @@ env
 #local settings
 basil/settings/local.py
 
+#django-environ
+.env
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
