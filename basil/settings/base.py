@@ -7,8 +7,9 @@ REST_FRAMEWORK = {
 	'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
 	'COERCE_DECIMAL_TO_STRING': False,
 	'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        
     )
 }
 
@@ -43,6 +44,9 @@ CORS_ORIGIN_WHITELIST = (
     'localhost'
 )
 
+CORS_ALLOW_CREDENTIALS = True
+
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -75,6 +79,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'basil.wsgi.application'
 
+AUTH_USER_MODEL = 'accounts.BasilUser'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators

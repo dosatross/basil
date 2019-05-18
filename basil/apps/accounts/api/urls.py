@@ -7,7 +7,8 @@ router = DefaultRouter()
 
 urlpatterns = [
 	path('profile/', views.UserProfileView.as_view()),
-    path('token-auth/', obtain_auth_token)
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
 ]
 
 
