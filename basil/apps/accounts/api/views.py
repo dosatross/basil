@@ -20,11 +20,12 @@ def login_view(request):
 	user = authenticate(request, email=email, password=password)
 	if user is not None:
 		login(request, user)
-		return JsonResponse({
-			'userid': user.id,
+		response = JsonResponse({
 			'sessionid': request.session.session_key,
 			'csrftoken': get_token(request)
 		})
+		response.set_cookie('basiluserid',user.id)
+		return response
 	return HttpResponse(status=400)
 
 def logout_view(request):
