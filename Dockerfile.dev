@@ -1,0 +1,17 @@
+FROM basil AS builder
+
+COPY requirements.txt /
+RUN apk add \
+    --upgrade \
+    gcc python3-dev musl-dev
+    
+RUN /var/basil/env/bin/pip install --upgrade pip
+RUN /var/basil/env/bin/pip install -r dev-requirements.txt
+
+FROM basil
+COPY --from=builder /var/basil/env /var/basil/env
+COPY . /opt/basil
+WORKDIR /opt/basil
+RUN /var/basil/env/bin/python -m compileall -q -f /opt/basil
+EXPOSE 8000
+ENTRYPOINT ["/var/basil/env/bin/python", "./manage.py", "runserver", "0.0.0.0:8000"]

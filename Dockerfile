@@ -1,28 +1,23 @@
 
+FROM python:3.7-alpine AS builder
+
+COPY requirements.txt /
+RUN apk add \
+    --upgrade \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    postgresql-dev g++ python3-dev musl-dev py3-virtualenv py-pandas
+    
+RUN virtualenv -p python /var/basil/env
+RUN /var/basil/env/bin/pip install --upgrade pip
+RUN /var/basil/env/bin/pip install -r requirements.txt
+
 FROM python:3.7-alpine
-
-# Project Files and Settings
-ARG PROJECT=basil
-ARG PROJECT_DIR=/opt/${PROJECT}
-
-COPY . PROJECT_DIR
-WORKDIR PROJECT_DIR
-
-RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
-
-# virtualenv
-RUN pip install virtualenv
-RUN virtualenv env
-RUN source env/bin/activate
-COPY requirements.pip .
-RUN pip install -r requirements.pip
-
-# database migrations
-python manage.py migrate
-
+RUN apk add  \
+    --upgrade \
+    libpq libstdc++
+COPY --from=builder /var/basil/env /var/basil/env
+COPY . /opt/basil
+WORKDIR /opt/basil
+RUN /var/basil/env/bin/python -m compileall -q -f /opt/basil
 EXPOSE 8000
-# CMD ["gunicorn", "-w 4", "main:basil"]
-
-
-ENTRYPOINT ["python", "manage.py"]
-CMD ["runserver","0.0.0.0:8000"]
+ENTRYPOINT ["/var/basil/env/bin/gunicorn", "--chdir", "/opt/basil", "-c", "/opt/basil/gunicorn.py", "basil.wsgi:application"]
