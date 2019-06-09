@@ -4,9 +4,11 @@ DEBUG = True
 
 SECRET_KEY = ')*q(vxory=r^j(gtdrdg*3*nbc$k%j@u&^rq&&(5v3^z7@h-%)'
 
+ALLOWED_HOSTS = ['*']
+
 INSTALLED_APPS += [
-    'debug_toolbar',
     'silk',
+    'debug_toolbar',
     'django_extensions',
 ]
 
@@ -17,11 +19,11 @@ MIDDLEWARE += [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'password',
-        'HOST': '127.0.0.1',
+        'HOST': '192.168.1.7',
         'PORT': '5432'
     }
 }
