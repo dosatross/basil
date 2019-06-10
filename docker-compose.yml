@@ -8,7 +8,7 @@ services:
   #   volumes:
   #     - postgres_data:/var/lib/postgresql/data/
   django:
-    image: basil-dev:latest
+    image: dosatross/basil-dev:latest
     entrypoint: /var/basil/env/bin/python /opt/basil/manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/opt/basil

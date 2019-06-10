@@ -1,4 +1,4 @@
-FROM basil AS builder
+FROM dosatross/basil AS builder
 
 COPY requirements.txt /
 RUN apk add \
@@ -8,7 +8,7 @@ RUN apk add \
 RUN /var/basil/env/bin/pip install --upgrade pip
 RUN /var/basil/env/bin/pip install -r dev-requirements.txt
 
-FROM basil
+FROM dosatross/basil
 COPY --from=builder /var/basil/env /var/basil/env
 COPY . /opt/basil
 WORKDIR /opt/basil
