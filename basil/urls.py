@@ -11,7 +11,8 @@ urlpatterns = [
 
 
 api_urlpatterns = [
-	re_path('users/', include('basil.apps.accounts.api.urls')),
+	path('auth/token-auth/', obtain_auth_token),
+	re_path('accounts/', include('basil.apps.accounts.api.urls')),
 	re_path('transactions/', include('basil.apps.transactions.api.urls')),
 	re_path('categories/', include('basil.apps.categories.api.urls')),
 ]

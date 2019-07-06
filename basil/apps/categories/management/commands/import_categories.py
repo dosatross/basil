@@ -2,8 +2,8 @@ import csv
 import os
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Q
-from django.contrib.auth.models import User
 from rest_framework.test import APIRequestFactory
+from basil.apps.accounts.models import BasilUser
 from basil.apps.categories.models import Category, CategoryGroup
 from basil.apps.categories.api.serializers import CategorySerializer
 from basil.settings import BASE_DIR
@@ -16,9 +16,9 @@ class Command(BaseCommand):
 			default=os.path.join(BASE_DIR,'apps','categories','fixtures','categories.csv')
 			)
 		parser.add_argument(
-			'--username',
-			dest='username',
-			default='demo'
+			'--email',
+			dest='email',
+			default='demo@gmail.com'
 			)
 
 	def handle(self, *args, **options):
@@ -26,7 +26,7 @@ class Command(BaseCommand):
 			reader = csv.DictReader(csvfile)
 			group_list = [element for element in reader.fieldnames if element not in ["category","subcategory","is_credit","is_adjustment","is_internal"]]
 			added_categories = []
-			user = User.objects.get(username=options['username'])
+			user = BasilUser.objects.get(email=options['email'])
 
 			for row in reader:
 				categorystr = row['category']
