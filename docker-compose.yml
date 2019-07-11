@@ -1,40 +1,44 @@
-version: '3'
-# https://blog.devartis.com/django-development-with-docker-a-completed-development-cycle-7322ad8ba508
+version: '3.7'
+
 services:
-  db:
-    image: postgres:10.6-alpine
+  basil-postgres:
+    container_name: basil-postgres
+    image: postgres:10.6
+    networks:
+      - basil-network
     ports:
       - 5432:5432
-    network_mode: bridge
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
+      - POSTGRES_DB=basil
+      - POSTGRES_USER=basil_user
       - POSTGRES_PASSWORD=password
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-  django:
-    image: dosatross/basil-dev:latest
+  basil-core:
+    container_name: basil-core
+    image: dosatross/basil-dev
     entrypoint: /var/basil/env/bin/python /opt/basil/manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/opt/basil
-    network_mode: bridge
+    networks:
+      - basil-network
     ports:
-      - "8000:8000"
+      - 8000:8000
     environment:
       - BASIL_ENV=development
-    depends_on:
-      - db
-    links:
-      - db
-  nginx:
-    image: dosatross/basil-nginx:latest
-    build: ./nginx
-    network_mode: bridge
+      - BASIL_DB_HOST=basil-postgres
+  basil-nginx:
+    container_name: basil-nginx
+    image: nginx
+    volumes:
+      - ./nginx:/etc/nginx/
+    networks:
+      - basil-network
     ports:
       - 80:80
-    depends_on:
-      - django
-    links:
-      - django
+
 volumes:
   postgres_data:
+
+networks:
+  basil-network:
