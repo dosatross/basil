@@ -1,3 +1,4 @@
+import os
 from basil.settings.base import *
 
 DEBUG = True
@@ -20,11 +21,11 @@ MIDDLEWARE += [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'password',
-        'HOST': 'db',
-        'PORT': '5432'
+        'NAME': os.getenv('BASIL_DB_NAME') or 'basil',
+        'USER': os.getenv('BASIL_DB_USER') or 'basil_user',
+        'PASSWORD': os.getenv('BASIL_DB_PW') or 'password',
+        'HOST': os.getenv('BASIL_DB_HOST') or '127.0.0.1',
+        'PORT': os.getenv('BASIL_DB_PORT') or '5432'
     }
 }
 
