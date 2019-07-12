@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: basil-core-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    component: basil-core
+  ports:
+    - port: 8000
+      targetPort: 8000

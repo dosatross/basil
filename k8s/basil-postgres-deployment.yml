@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: basil-postgres-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: basil-postgres
+  template:
+    metadata:
+      labels:
+        component: basil-postgres
+    spec:
+      volumes:
+        - name: basil-postgres-volume
+          persistentVolumeClaim:
+            claimName: basil-postgres-pvc
+      containers:
+        - name: basil-postgres
+          image: postgres
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: basil-postgres-volume
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
+          env:
+            - name: POSTGRES_DB
+              value: basil
+            - name: POSTGRES_USER
+              value: basil_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: basil-core-secret
+                  key: BASIL_DB_PW
