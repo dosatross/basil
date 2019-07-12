@@ -13,6 +13,8 @@ REST_FRAMEWORK = {
     )
 }
 
+ALLOWED_HOSTS = ['*']
+
 # installed apps
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -30,6 +32,19 @@ INSTALLED_APPS = [
     'basil.apps.categories',
     
 ]
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('BASIL_DB_NAME') or 'basil-postgres',
+        'USER': os.getenv('BASIL_DB_USER') or 'basil_user',
+        'PASSWORD': os.getenv('BASIL_DB_PW') or 'password',
+        'HOST': os.getenv('BASIL_DB_HOST') or '127.0.0.1',
+        'PORT': os.getenv('BASIL_DB_PORT') or '5432'
+    }
+}
+
+SECRET_KEY = os.getenv('BASIL_SECRET_KEY') or ')*q(vxory=r^j(gtdrdg*3*nbc$k%j@u&^rq&&(5v3^z7@h-%)'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
