@@ -9,15 +9,15 @@ services:
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_DB=basil
+      - POSTGRES_DB=basil-postgres
       - POSTGRES_USER=basil_user
       - POSTGRES_PASSWORD=password
     volumes:
       - postgres_data:/var/lib/postgresql/data/
   basil-core:
     container_name: basil-core
-    image: dosatross/basil-dev
-    entrypoint: /var/basil/env/bin/python /opt/basil/manage.py runserver 0.0.0.0:8000
+    image: dosatross/basil_dev
+    entrypoint: python /opt/basil/manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/opt/basil
     networks:
