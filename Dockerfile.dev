@@ -12,4 +12,5 @@ COPY --from=builder /wheels /wheels
 RUN pip install -U pip && \
     pip install --no-cache-dir -r dev-requirements.txt -f /wheels && \
     rm -rf /wheels
+ENV BASIL_ENV development
 ENTRYPOINT ["python", "./manage.py", "runserver", "0.0.0.0:8000"]
