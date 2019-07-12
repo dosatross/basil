@@ -4,12 +4,13 @@ services:
   basil-postgres:
     container_name: basil-postgres
     image: postgres:10.6
+    restart: always
     networks:
       - basil-network
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_DB=basil-postgres
+      - POSTGRES_DB=basil
       - POSTGRES_USER=basil_user
       - POSTGRES_PASSWORD=password
     volumes:
@@ -17,7 +18,8 @@ services:
   basil-core:
     container_name: basil-core
     image: dosatross/basil_dev
-    entrypoint: python /opt/basil/manage.py runserver 0.0.0.0:8000
+    entrypoint: python ./manage.py runserver 0.0.0.0:8000
+    restart: always
     volumes:
       - .:/opt/basil
     networks:
@@ -30,6 +32,7 @@ services:
   basil-nginx:
     container_name: basil-nginx
     image: nginx
+    restart: always
     volumes:
       - ./nginx:/etc/nginx/
     networks:

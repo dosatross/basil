@@ -36,7 +36,7 @@ INSTALLED_APPS = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('BASIL_DB_NAME') or 'basil-postgres',
+        'NAME': os.getenv('BASIL_DB_NAME') or 'basil',
         'USER': os.getenv('BASIL_DB_USER') or 'basil_user',
         'PASSWORD': os.getenv('BASIL_DB_PW') or 'password',
         'HOST': os.getenv('BASIL_DB_HOST') or '127.0.0.1',
