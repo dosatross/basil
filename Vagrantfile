@@ -32,11 +32,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   for image in /opt/basil/docker_images/*; do docker load -i $image; done
 
   cd /opt/basil
-  docker-compose up -d basil-core basil-postgres basil-nginx
-  sleep 10
-  docker exec basil-core /var/basil/env/bin/python ./manage.py migrate
-  docker exec basil-core /var/basil/env/bin/python ./manage.py collectstatic --noinput
-  docker exec basil-core /var/basil/env/bin/python ./manage.py import_users
+  docker-compose up -d basil-postgres
+  docker-compose up -d basil-core
+  docker-compose up -d basil-nginx
+  docker exec basil-core python ./manage.py migrate
+  docker exec basil-core python ./manage.py collectstatic --noinput
+  docker exec basil-core python ./manage.py import_users
   SCRIPT
 
   config.vm.provision "shell", preserve_order: true, inline: $script
