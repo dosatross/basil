@@ -12,29 +12,7 @@
 # below:
 .git
 .gitignore
+#!include:.gitignore
 
 # Ignored by the build system
 /setup.cfg
-
-
-data/
-
-# virtual environment
-env
-
-#django
-*.log
-*db.sqlite3
-
-#local settings
-basil/settings/local.py
-
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-.vscode
-.vagrant
-terraform/
-docker_images/
