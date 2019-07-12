@@ -13,4 +13,4 @@ entrypoint: gunicorn -b :$PORT -w 1 basil.wsgi:application
 
 env_variables:
   BASIL_ENV: production
-  
+  BASIL_DB_HOST: /cloudsql/basil-234800:australia-southeast1:basil-postgres-e1b70ebc
