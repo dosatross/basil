@@ -7,8 +7,9 @@ REST_FRAMEWORK = {
 	'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
 	'COERCE_DECIMAL_TO_STRING': False,
 	'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
 
@@ -16,6 +17,7 @@ REST_FRAMEWORK = {
 GRAPHENE = {
     'SCHEMA': 'basil.schema.schema'
 }
+ALLOWED_HOSTS = ['*']
 
 # installed apps
 INSTALLED_APPS = [
@@ -36,6 +38,19 @@ INSTALLED_APPS = [
     
 ]
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('BASIL_DB_NAME') or 'basil',
+        'USER': os.getenv('BASIL_DB_USER') or 'basil_user',
+        'PASSWORD': os.getenv('BASIL_DB_PW') or 'password',
+        'HOST': os.getenv('BASIL_DB_HOST') or '127.0.0.1',
+        'PORT': os.getenv('BASIL_DB_PORT') or '5432'
+    }
+}
+
+SECRET_KEY = os.getenv('BASIL_SECRET_KEY') or ')*q(vxory=r^j(gtdrdg*3*nbc$k%j@u&^rq&&(5v3^z7@h-%)'
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -48,6 +63,9 @@ CORS_ORIGIN_WHITELIST = (
     '127.0.0.1',
     'localhost'
 )
+
+CORS_ALLOW_CREDENTIALS = True
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -62,6 +80,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'basil.urls'
+
+STATIC_URL = '/static/'
+STATIC_ROOT = './static/'
 
 TEMPLATES = [
     {
@@ -81,6 +102,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'basil.wsgi.application'
 
+AUTH_USER_MODEL = 'accounts.BasilUser'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators

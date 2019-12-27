@@ -1,0 +1,16 @@
+FROM dosatross/basil AS builder
+RUN apk add \
+    --upgrade \
+    gcc python3-dev musl-dev
+WORKDIR /wheels
+RUN pip install -U pip && \
+    pip wheel -r /opt/basil/dev-requirements.txt
+
+
+FROM dosatross/basil
+COPY --from=builder /wheels /wheels
+RUN pip install -U pip && \
+    pip install --no-cache-dir -r dev-requirements.txt -f /wheels && \
+    rm -rf /wheels
+ENV BASIL_ENV development
+ENTRYPOINT ["python", "./manage.py", "runserver", "0.0.0.0:8000"]

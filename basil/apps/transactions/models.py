@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import Q, Sum, Func, F, Count
-from django.contrib.auth.models import User
+from basil.apps.accounts.models import BasilUser
 from basil.apps.categories.models import Category
 from basil.apps.transactions.utils import *
 from basil.apps.transactions.constants import DJ_TRUNC
@@ -12,7 +12,7 @@ class Transaction(models.Model):
 	category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
 	date = models.DateField()
 
-	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	user = models.ForeignKey(BasilUser, on_delete=models.CASCADE)
 
 	class Meta:
 		ordering = ['-date']

@@ -4,8 +4,8 @@ import pytz
 import datetime as dt
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Q
-from django.contrib.auth.models import User
 from rest_framework.test import APIRequestFactory
+from basil.apps.accounts.models import BasilUser
 from basil.apps.transactions.models import Transaction
 from basil.apps.categories.models import Category
 from basil.apps.transactions.api.serializers import TransactionSerializer
@@ -29,9 +29,9 @@ class Command(BaseCommand):
 			default='pb'
 			)
 		parser.add_argument(
-			'--username',
-			dest='username',
-			default='demo'
+			'--email',
+			dest='email',
+			default='demo@gmail.com'
 			)
 
 	def handle(self, *args, **options):
@@ -40,7 +40,7 @@ class Command(BaseCommand):
 			categories_map = csv.DictReader(cf)
 			added_transactions = []
 			source = options['source']
-			user = User.objects.get(username=options['username'])
+			user = BasilUser.objects.get(email=options['email'])
 			timezone = pytz.timezone(TIME_ZONE)
 
 			for transaction in transactions:

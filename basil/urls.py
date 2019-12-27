@@ -3,6 +3,9 @@ from django.conf import settings
 from django.urls import path, include, re_path
 from rest_framework.documentation import include_docs_urls
 from graphene_django.views import GraphQLView
+from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -13,7 +16,10 @@ urlpatterns = [
 
 
 api_urlpatterns = [
-	re_path('users/', include('basil.apps.accounts.api.urls')),
+	path('auth/token-auth/', obtain_auth_token),
+	path('auth/jwt/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+  path('auth/jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+	re_path('accounts/', include('basil.apps.accounts.api.urls')),
 	re_path('transactions/', include('basil.apps.transactions.api.urls')),
 	re_path('categories/', include('basil.apps.categories.api.urls')),
 ]
@@ -23,10 +29,19 @@ urlpatterns += [
 ]
 
 
-
-if 'debug_toolbar' in settings.INSTALLED_APPS:
-	import debug_toolbar
+if settings.DEBUG:
+	from rest_framework.documentation import include_docs_urls
 	urlpatterns += [
-		path('__debug__/', include(debug_toolbar.urls)),
-		path('silk/', include('silk.urls', namespace='silk')),
+		path('docs/', include_docs_urls(title='Basil API Docs')),
 	]
+
+	if 'debug_toolbar' in settings.INSTALLED_APPS:
+		import debug_toolbar
+		urlpatterns += [
+			path('__debug__/', include(debug_toolbar.urls)),
+		]
+
+	if 'silk' in settings.INSTALLED_APPS:
+		urlpatterns += [
+			path('silk/', include('silk.urls', namespace='silk')),
+		]

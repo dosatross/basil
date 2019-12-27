@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth.models import User
+from basil.apps.accounts.models import BasilUser
 
 class Command(BaseCommand):
 	def add_arguments(self, parser):
@@ -15,7 +15,7 @@ class Command(BaseCommand):
 			)
 
 	def handle(self, *args, **options):
-		user = User.objects.create(username='demo',
+		user = BasilUser.objects.create(
 			email='demo@gmail.com',
 			is_superuser = False,
 			is_staff = False
@@ -26,7 +26,7 @@ class Command(BaseCommand):
 
 
 		if options['su']:
-			user = User.objects.create(username='su',
+			user = BasilUser.objects.create(
 				email='su@gmail.com',
 				is_superuser = True,
 				is_staff = True
@@ -37,7 +37,7 @@ class Command(BaseCommand):
 
 
 		if options['admin']:
-			user = User.objects.create(username='admin',
+			user = BasilUser.objects.create(
 				email='admin@gmail.com',
 				is_superuser = False,
 				is_staff = True
