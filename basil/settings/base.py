@@ -12,6 +12,11 @@ REST_FRAMEWORK = {
     )
 }
 
+# Graphene
+GRAPHENE = {
+    'SCHEMA': 'basil.schema.schema'
+}
+
 # installed apps
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -22,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'graphene_django',
     'django_filters',
     'corsheaders',
     'basil.apps.accounts',
