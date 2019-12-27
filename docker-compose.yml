@@ -1,17 +1,47 @@
-version: '3'
+version: '3.7'
 
 services:
-  db:
-    image: postgres:10.6-alpine
+  basil-postgres:
+    container_name: basil-postgres
+    image: postgres:10.6
+    restart: always
+    networks:
+      - basil-network
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=basil
+      - POSTGRES_USER=basil_user
+      - POSTGRES_PASSWORD=password
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-  django:
-    build: .
+  basil-core:
+    container_name: basil-core
+    image: dosatross/basil_dev
+    entrypoint: python ./manage.py runserver 0.0.0.0:8000
+    restart: always
     volumes:
       - .:/opt/basil
+    networks:
+      - basil-network
     ports:
-      - "8000:8000"
-    depends_on:
-      - db
+      - 8000:8000
+    environment:
+      - BASIL_ENV=development
+      - BASIL_DB_HOST=basil-postgres
+  basil-nginx:
+    container_name: basil-nginx
+    image: nginx
+    restart: always
+    volumes:
+      - ./nginx:/etc/nginx/
+    networks:
+      - basil-network
+    ports:
+      - 80:80
+
 volumes:
   postgres_data:
+
+networks:
+  basil-network:

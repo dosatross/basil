@@ -14,7 +14,7 @@ class CategoryGroup(models.Model):
 class Category(models.Model):
 	name = models.CharField(max_length=50, null=False, blank=False)
 	subcategory = models.CharField(max_length=50)
-	groups = models.ManyToManyField(CategoryGroup, related_name='categories')
+	groups = models.ManyToManyField(CategoryGroup, related_name='categories', blank=True)
 	
 	is_credit = models.BooleanField(default=False,null=True) 	# not negative amount
 	is_adjustment = models.BooleanField(default=False) 			# refund, reimbursement etc.

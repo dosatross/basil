@@ -1,0 +1,16 @@
+# gcloud deployment
+runtime: python37
+
+instance_class: F2
+automatic_scaling:
+  max_instances: 2
+
+handlers:
+- url: /.*
+  script: auto
+
+entrypoint: gunicorn -b :$PORT -w 1 basil.wsgi:application
+
+env_variables:
+  BASIL_ENV: production
+  BASIL_DB_HOST: /cloudsql/basil-234800:australia-southeast1:basil-postgres-e1b70ebc

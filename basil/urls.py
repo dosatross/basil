@@ -27,10 +27,19 @@ urlpatterns += [
 ]
 
 
-
-if 'debug_toolbar' in settings.INSTALLED_APPS:
-	import debug_toolbar
+if settings.DEBUG:
+	from rest_framework.documentation import include_docs_urls
 	urlpatterns += [
-		path('__debug__/', include(debug_toolbar.urls)),
-		path('silk/', include('silk.urls', namespace='silk')),
+		path('docs/', include_docs_urls(title='Basil API Docs')),
 	]
+
+	if 'debug_toolbar' in settings.INSTALLED_APPS:
+		import debug_toolbar
+		urlpatterns += [
+			path('__debug__/', include(debug_toolbar.urls)),
+		]
+
+	if 'silk' in settings.INSTALLED_APPS:
+		urlpatterns += [
+			path('silk/', include('silk.urls', namespace='silk')),
+		]

@@ -1,7 +1,7 @@
 from basil.settings.base import *
+
+"""
 import environ
-
-
 env = environ.Env(
     SECRET_KEY=str,
     DATABASE_URL=str,
@@ -17,6 +17,4 @@ DATABASES = {
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 SECRET_KEY = env.str('SECRET_KEY')
-
-
-INSTALLED_APPS += ['gunicorn', ]
+"""

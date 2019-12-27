@@ -6,6 +6,7 @@ env
 #django
 *.log
 *db.sqlite3
+static/
 
 #local settings
 basil/settings/local.py
