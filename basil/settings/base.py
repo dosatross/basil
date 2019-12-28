@@ -15,8 +15,17 @@ REST_FRAMEWORK = {
 
 # Graphene
 GRAPHENE = {
-    'SCHEMA': 'basil.schema.schema'
+    'SCHEMA': 'basil.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
 }
+
+AUTHENTICATION_BACKENDS = [
+    'graphql_jwt.backends.JSONWebTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 ALLOWED_HOSTS = ['*']
 
 # installed apps
