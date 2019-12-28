@@ -3,6 +3,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from basil.apps.categories.models import Category, CategoryGroup
 from basil.apps.categories.api.serializers import CategorySerializer, CategoryGroupSerializer
+from basil.apps.categories.api.utils import filter_categories_by_category_set
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -15,18 +16,12 @@ class CategoryViewSet(viewsets.ModelViewSet):
 		return Category.objects.filter(user=user)
 
 	def list(self,request):
-		q = self.get_queryset()
-		if request.query_params.get('set') == 'income':
-			q = q.intersection(Category.get_income_categories())
-		elif request.query_params.get('set') == 'expenses':
-			q = q.intersection(Category.get_expense_categories())
-		elif request.query_params.get('set'):
+		q = filter_categories_by_category_set(self.get_queryset(),request.query_params.get('set'))
+		if not q:
 			return Response(status=status.HTTP_400_BAD_REQUEST)
 
 		serializer = CategorySerializer(q, many=True)
 		return Response(serializer.data)
-
-
 
 class CategoryGroupViewSet(viewsets.ModelViewSet):
 
