@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from basil.apps.categories.models import Category, CategoryGroup
 
+
 class CategoryGroupSerializer(serializers.ModelSerializer):
 	categories = serializers.PrimaryKeyRelatedField(many=True,queryset=Category.objects.all())
 	categories_display = serializers.SerializerMethodField()
@@ -21,7 +22,6 @@ class CategoryGroupSerializer(serializers.ModelSerializer):
 
 	def get_categories_display(self, obj):
 		return [str(category) for category in obj.categories.all()]
-
 
 class CategorySerializer(serializers.ModelSerializer):
 	groups_display = serializers.SerializerMethodField()

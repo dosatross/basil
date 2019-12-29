@@ -1,7 +1,9 @@
 from graphene import ObjectType, List, Field, ID, String
 from graphene_django.types import DjangoObjectType
+from graphene_django.rest_framework.mutation import SerializerMutation
 
 from basil.apps.categories.models import Category, CategoryGroup
+from basil.apps.categories.api.serializers import CategorySerializer, CategoryGroupSerializer
 from basil.apps.categories.api.utils import filter_categories_by_category_set
 
 class CategoryType(DjangoObjectType):
@@ -19,6 +21,10 @@ class CategoryQuery(ObjectType):
     qs = Category.objects.filter(user=info.context.user)
     return filter_categories_by_category_set(qs,category_set)
 
+class CategoryMutation(SerializerMutation):
+  class Meta:
+    serializer_class = CategorySerializer
+
 
 class CategoryGroupType(DjangoObjectType):
   class Meta:
@@ -33,3 +39,7 @@ class CategoryGroupQuery(ObjectType):
 
   def resolve_all_category_groups(self, info, **kwargs):
     return CategoryGroup.objects.filter(user=info.context.user)
+
+class CategoryGroupMutation(SerializerMutation):
+  class Meta:
+    serializer_class = CategoryGroupSerializer
