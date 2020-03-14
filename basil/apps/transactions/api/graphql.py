@@ -1,32 +1,40 @@
 from django.db.models import Q
+from django.db.models.query import QuerySet
 from graphql import GraphQLError
 import graphene
-from graphene import ObjectType, Field, String, Date, Float, Int, List, ID
-from graphene_django.types import DjangoObjectType
-from graphene.types.resolver import dict_resolver
+from graphene import ObjectType, Field, String, Date, Float, Int, List, ID, Enum, relay
+from graphene_django_extras import DjangoSerializerMutation, DjangoInputObjectType
+from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
 
+from basil.utils.graphql import Connection
 from basil.apps.transactions.models import Transaction
+from basil.apps.transactions.api.serializers import TransactionSerializer
 from basil.apps.transactions.utils import date_start_end
 from basil.apps.transactions.constants import ISO_DATE_FORMAT, PERIOD_WEEK, PERIOD_MONTH, PERIOD_QUARTER,PERIOD_YEAR, PERIOD_LENGTHS
 from basil.apps.transactions.api.utils import filter_category_set, parse_date_range, filter_transactions
 from basil.apps.categories.models import Category
-from basil.apps.categories.api.graphql import CategoryType
+from basil.apps.categories.api.graphql import CategoryType, CategoryGroupType
+
 
 class TransactionType(DjangoObjectType):
   class Meta:
     model = Transaction
-
-class TransactionQuery(ObjectType):
-  transaction = Field(TransactionType,id=ID(required=True))
-  all_transactions = List(TransactionType,date_range=String(),top=Int())
-  income = List(TransactionType,date_range=String(),top=Int())
-  expenses = List(TransactionType,date_range=String(),top=Int())
-
-  def resolve_transaction(self, info, id):
+    interfaces = (relay.Node, )
+    filter_fields  = []
+    connection_class = Connection
+  
+  @classmethod
+  def get_node(cls, info, id):
     return Transaction.objects.get(id=id)
 
-  def resolve_all_transactions(self, info, date_range=None, top=None):
-    qs = Transaction.objects.filter(user=info.context.user)
+class TransactionQuery(ObjectType):
+  transaction_connection = DjangoFilterConnectionField(TransactionType,date_range=String(),top=Int())
+  income = DjangoFilterConnectionField(TransactionType,date_range=String(),top=Int())
+  expenses = DjangoFilterConnectionField(TransactionType,date_range=String(),top=Int())
+
+  def resolve_transaction_connection(self, info, date_range=None, top=None, **kwargs):
+    qs = Transaction.objects.filter(user=info.context.user).select_related('category')
     return filter_transactions(qs,date_range,top)
 
   def resolve_income(self, info, date_range=None, top=None):
@@ -38,7 +46,18 @@ class TransactionQuery(ObjectType):
     user=info.context.user
     qs = Transaction.objects.filter(Q(category__in=Category.get_expense_categories()) & Q(user=user))
     return filter_transactions(qs,date_range,top)
-    
+
+class TransactionMutation(DjangoSerializerMutation):
+
+  @classmethod
+  def get_serializer_kwargs(cls, root, info, **kwargs):
+    return {'context': {'request': info.context}}
+
+  class Meta:
+    serializer_class = TransactionSerializer
+    exclude_fields = ('user', )
+    input_field_name = 'input'
+
 
 class DateRangeType(ObjectType):
   start = Date()
@@ -61,7 +80,8 @@ class PeriodTotalQuery(ObjectType):
     set = String(required=True),
     group_name = String(),
     include = String(),
-    exclude = String())
+    exclude = String()
+  )
 
   def resolve_period_total(self, info, period_len, set, group_name=None, include=None, exclude=None):
     if period_len not in PERIOD_LENGTHS:
@@ -131,7 +151,7 @@ class PeriodCategoryTotalQuery(ObjectType):
 
 
 class CategoryPeriodTotalType(ObjectType):
-  periods_starting = List(PeriodTotalType)
+  period_totals = List(PeriodTotalType)
   category = Field(CategoryType)
 
 class CategoryPeriodTotalQuery(ObjectType):
@@ -152,3 +172,24 @@ class CategoryPeriodTotalQuery(ObjectType):
       info.context.user,
       period_len,
       category_set)
+
+class CategorySet(Enum):
+    income = 'income'
+    expenses = 'expenses'
+    group = 'group'
+
+class CategorySetPeriodTotalType(ObjectType):
+  period_totals = List(PeriodTotalType)
+  set = CategorySet()
+  group = Field(CategoryGroupType)
+
+class CategorySetPeriodTotalQuery(ObjectType):
+  category_set_period_total = List(CategorySetPeriodTotalType,
+    period_len = String(required=True))
+  
+  def resolve_category_set_period_total(self, info, period_len):
+    if period_len not in PERIOD_LENGTHS:
+      raise GraphQLError()
+    return Transaction.category_set_period_total(info.context.user, period_len)
+    
+    

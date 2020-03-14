@@ -1,10 +1,10 @@
+import logging
 from django.db import models
 from django.db.models import Q, Sum, Func, F, Count
 from basil.apps.accounts.models import BasilUser
-from basil.apps.categories.models import Category
+from basil.apps.categories.models import Category, CategoryGroup
 from basil.apps.transactions.utils import *
 from basil.apps.transactions.constants import DJ_TRUNC
-
 
 class Transaction(models.Model):
 	amount = models.DecimalField(decimal_places=2, max_digits=11)
@@ -74,8 +74,31 @@ class Transaction(models.Model):
 
 		dates = date_starting_periods(user,period_len)
 
-		return [{'category': category, 'periods_starting': 
+		return [{'category': category, 'period_totals': 
 			[{'period_starting': date,'total': total_or_zero(q,category,date)} 
 				for date in dates]} for category in categories]
 
-
+	def category_set_period_total(user,period_len):
+		""" 
+		period totals for each category group including income and expenses
+		"""
+		result = []
+		result.append({
+				'set': 'expenses',
+				'group': None,
+				'period_totals': Transaction.period_total(user,period_len,Category.get_expense_categories())
+			})
+		result.append({
+				'set': 'income',
+				'group': None,
+				'period_totals': Transaction.period_total(user,period_len,Category.get_income_categories())
+			})
+		for group in CategoryGroup.objects.filter(user=user):
+			result.append({
+				'set': 'group',
+				'group': group,
+				'period_totals': Transaction.period_total(user,period_len,group.categories.all())
+			})
+		return result
+			
+		

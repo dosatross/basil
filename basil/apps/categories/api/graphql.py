@@ -1,45 +1,85 @@
-from graphene import ObjectType, List, Field, ID, String
-from graphene_django.types import DjangoObjectType
+from graphene import relay, ObjectType, List, Field, ID, String, Boolean, Int
+from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.rest_framework.mutation import SerializerMutation
+from graphene_django_extras import DjangoSerializerMutation
 
+from basil.utils.graphql import Connection
 from basil.apps.categories.models import Category, CategoryGroup
 from basil.apps.categories.api.serializers import CategorySerializer, CategoryGroupSerializer
 from basil.apps.categories.api.utils import filter_categories_by_category_set
 
+
+class CategoryConnection(Connection):
+  class Meta:
+    abstract = True
+
+  def resolve_all(self, info, **kwargs):
+    return Category.objects.filter(user=info.context.user)
+
 class CategoryType(DjangoObjectType):
+  is_credit = Field(Int,required=False)
   class Meta:
     model = Category
-
-class CategoryQuery(ObjectType):
-  category = Field(CategoryType,id=ID(required=True))
-  all_categories = List(CategoryType, category_set=String())
-
-  def resolve_category(self, info, id):
+    interfaces = (relay.Node, )
+    filter_fields  = []
+    connection_class = CategoryConnection
+  
+  @classmethod
+  def get_node(cls, info, id):
     return Category.objects.get(id=id)
 
-  def resolve_all_categories(self, info, category_set):
+class CategoryQuery(ObjectType):
+  category_connection = DjangoFilterConnectionField(CategoryType)
+
+  def resolve_category_connection(self, info, category_set=None, **kwargs):
     qs = Category.objects.filter(user=info.context.user)
     return filter_categories_by_category_set(qs,category_set)
 
-class CategoryMutation(SerializerMutation):
+class CategoryMutation(DjangoSerializerMutation):
+
+  @classmethod
+  def get_serializer_kwargs(cls, root, info, **kwargs):
+    return {'context': {'request': info.context}}
+
   class Meta:
     serializer_class = CategorySerializer
+    exclude_fields = ('user', )
+    input_field_name = 'input'
 
+
+
+class CategoryGroupConnection(Connection):
+  class Meta:
+    abstract = True
+
+  def resolve_all(self, info, **kwargs):
+    return CategoryGroup.objects.filter(user=info.context.user)
 
 class CategoryGroupType(DjangoObjectType):
   class Meta:
     model = CategoryGroup
-
-class CategoryGroupQuery(ObjectType):
-  category_group = Field(CategoryGroupType,id=ID(required=True))
-  all_category_groups = List(CategoryGroupType)
-
-  def resolve_category_group(self, info, id):
+    interfaces = (relay.Node, )
+    filter_fields  = []
+    connection_class = CategoryGroupConnection
+  
+  @classmethod
+  def get_node(cls, info, id):
     return CategoryGroup.objects.get(id=id)
 
-  def resolve_all_category_groups(self, info, **kwargs):
+class CategoryGroupQuery(ObjectType):
+  category_group_connection = DjangoFilterConnectionField(CategoryGroupType)
+
+  def resolve_category_group_connection(self, info, **kwargs):
     return CategoryGroup.objects.filter(user=info.context.user)
 
-class CategoryGroupMutation(SerializerMutation):
+class CategoryGroupMutation(DjangoSerializerMutation):
+
+  @classmethod
+  def get_serializer_kwargs(cls, root, info, **kwargs):
+    return {'context': {'request': info.context}}
+
   class Meta:
     serializer_class = CategoryGroupSerializer
+    exclude_fields = ('user', )
+    input_field_name = 'input'
