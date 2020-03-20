@@ -9,6 +9,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 
 from basil.utils.graphql import Connection
 from basil.apps.transactions.models import Transaction
+from basil.apps.transactions.filters import TransactionFilter
 from basil.apps.transactions.api.serializers import TransactionSerializer
 from basil.apps.transactions.utils import date_start_end
 from basil.apps.transactions.constants import ISO_DATE_FORMAT, PERIOD_WEEK, PERIOD_MONTH, PERIOD_QUARTER,PERIOD_YEAR, PERIOD_LENGTHS
@@ -21,7 +22,6 @@ class TransactionType(DjangoObjectType):
   class Meta:
     model = Transaction
     interfaces = (relay.Node, )
-    filter_fields  = []
     connection_class = Connection
   
   @classmethod
@@ -29,23 +29,20 @@ class TransactionType(DjangoObjectType):
     return Transaction.objects.get(id=id)
 
 class TransactionQuery(ObjectType):
-  transaction_connection = DjangoFilterConnectionField(TransactionType,date_range=String(),top=Int())
-  income = DjangoFilterConnectionField(TransactionType,date_range=String(),top=Int())
-  expenses = DjangoFilterConnectionField(TransactionType,date_range=String(),top=Int())
+  transaction_connection = DjangoFilterConnectionField(TransactionType, filterset_class=TransactionFilter)
+  income_connection = DjangoFilterConnectionField(TransactionType, filterset_class=TransactionFilter)
+  expenses_connection = DjangoFilterConnectionField(TransactionType, filterset_class=TransactionFilter)
 
-  def resolve_transaction_connection(self, info, date_range=None, top=None, **kwargs):
-    qs = Transaction.objects.filter(user=info.context.user).select_related('category')
-    return filter_transactions(qs,date_range,top)
+  def resolve_transaction_connection(self, info, **kwargs):
+    return Transaction.objects.filter(user=info.context.user).select_related('category')
 
-  def resolve_income(self, info, date_range=None, top=None):
+  def resolve_income(self, info):
     user=info.context.user
-    qs = Transaction.objects.filter(Q(category__in=Category.get_income_categories()) & Q(user=user))
-    return filter_transactions(qs,date_range,top)
+    return Transaction.objects.filter(Q(category__in=Category.get_income_categories()) & Q(user=user))
 
-  def resolve_expenses(self, info, date_range=None, top=None):
+  def resolve_expenses(self, info):
     user=info.context.user
-    qs = Transaction.objects.filter(Q(category__in=Category.get_expense_categories()) & Q(user=user))
-    return filter_transactions(qs,date_range,top)
+    return Transaction.objects.filter(Q(category__in=Category.get_expense_categories()) & Q(user=user))
 
 class TransactionMutation(DjangoSerializerMutation):
 

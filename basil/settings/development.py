@@ -11,7 +11,12 @@ INSTALLED_APPS += [
 
 MIDDLEWARE += [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'silk.middleware.SilkyMiddleware', 
+    'silk.middleware.SilkyMiddleware',
+]
+
+
+GRAPHENE["MIDDLEWARE"] += [
+    'graphene_django.debug.DjangoDebugMiddleware'
 ]
 
 def show_toolbar(request):
