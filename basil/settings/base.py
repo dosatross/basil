@@ -13,6 +13,21 @@ REST_FRAMEWORK = {
     )
 }
 
+# Graphene
+GRAPHENE = {
+    'SCHEMA': 'basil.schema.schema',
+    # 'RELAY_CONNECTION_ENFORCE_FIRST_OR_LAST': True,
+    'RELAY_CONNECTION_MAX_LIMIT': 1000,
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
+}
+
+AUTHENTICATION_BACKENDS = [
+    'graphql_jwt.backends.JSONWebTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 ALLOWED_HOSTS = ['*']
 
 # installed apps
@@ -25,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'graphene_django',
     'django_filters',
     'corsheaders',
     'basil.apps.accounts',
