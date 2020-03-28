@@ -25,3 +25,6 @@ __pycache__/
 .vagrant
 static/
 docker_images/
+
+Vagrantfile
+docker-compose.yml

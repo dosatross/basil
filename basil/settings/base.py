@@ -68,12 +68,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
-CORS_ORIGIN_WHITELIST = (
-    '127.0.0.1:3000',
-    'localhost:3000',
-    '127.0.0.1',
-    'localhost'
-)
+CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
+    'http://127.0.0.1',
+    'http://localhost'
+]
 
 CORS_ALLOW_CREDENTIALS = True
 

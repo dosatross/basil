@@ -5,12 +5,19 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "debian/stretch64"
+  config.vm.box = "debian/buster64"
   vmname = "basil"
 
   config.vm.hostname = "#{vmname}"
   config.vm.network "public_network"
   config.vm.synced_folder "./", "/opt/basil/"
+
+  required_plugins = %w( vagrant-vbguest )
+  required_plugins.each do |plugin| 
+  unless Vagrant.has_plugin? plugin
+      system "vagrant plugin install #{plugin}"
+    end
+  end
 
   config.vm.provider "virtualbox" do |vb|
       vb.memory = "2048"
@@ -29,9 +36,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   curl -sL https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
   chmod +x /usr/local/bin/docker-compose
 
-  for image in /opt/basil/docker_images/*; do docker load -i $image; done
+  # for image in /opt/basil/docker_images/*; do docker load -i $image; done
 
   cd /opt/basil
+  if [ ! -f docker-compose.yml ]; then cp docker-compose.yml.example docker-compose.yml; fi
   docker-compose up -d basil-postgres
   docker-compose up -d basil-core
   docker-compose up -d basil-nginx

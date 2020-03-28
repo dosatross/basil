@@ -3,7 +3,7 @@ version: '3.7'
 services:
   basil-postgres:
     container_name: basil-postgres
-    image: postgres:10.6
+    image: postgres:12.2
     restart: always
     networks:
       - basil-network
@@ -31,7 +31,7 @@ services:
       - BASIL_DB_HOST=basil-postgres
   basil-nginx:
     container_name: basil-nginx
-    image: nginx
+    image: nginx:1.17.9
     restart: always
     volumes:
       - ./nginx:/etc/nginx/
