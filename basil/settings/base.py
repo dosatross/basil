@@ -16,6 +16,8 @@ REST_FRAMEWORK = {
 # Graphene
 GRAPHENE = {
     'SCHEMA': 'basil.schema.schema',
+    # 'RELAY_CONNECTION_ENFORCE_FIRST_OR_LAST': True,
+    'RELAY_CONNECTION_MAX_LIMIT': 1000,
     'MIDDLEWARE': [
         'graphql_jwt.middleware.JSONWebTokenMiddleware',
     ],

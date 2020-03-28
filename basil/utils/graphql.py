@@ -11,9 +11,9 @@ class Connection(graphene.Connection):
     def resolve_total_count(root, info, **kwargs):
       return root.length
 
-    @classmethod
-    def __init_subclass_with_meta__(cls, node=None, name=None, **options):
-      super(Connection, cls).__init_subclass_with_meta__(node=node, name=name, **options)
-      cls._meta.fields["all"] = Field(List(node))
+    # @classmethod
+    # def __init_subclass_with_meta__(cls, node=None, name=None, **options):
+    #   super(Connection, cls).__init_subclass_with_meta__(node=node, name=name, **options)
+    #   cls._meta.fields["all"] = DjangoListField(node)
 
     

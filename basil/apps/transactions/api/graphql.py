@@ -29,9 +29,9 @@ class TransactionType(DjangoObjectType):
     return Transaction.objects.get(id=id)
 
 class TransactionQuery(ObjectType):
-  transaction_connection = DjangoFilterConnectionField(TransactionType, filterset_class=TransactionFilter)
-  income_connection = DjangoFilterConnectionField(TransactionType, filterset_class=TransactionFilter)
-  expenses_connection = DjangoFilterConnectionField(TransactionType, filterset_class=TransactionFilter)
+  transaction_connection = DjangoFilterConnectionField(TransactionType, filterset_class=TransactionFilter, enforce_first_or_last=True)
+  income_connection = DjangoFilterConnectionField(TransactionType, filterset_class=TransactionFilter, enforce_first_or_last=True)
+  expenses_connection = DjangoFilterConnectionField(TransactionType, filterset_class=TransactionFilter, enforce_first_or_last=True)
 
   def resolve_transaction_connection(self, info, **kwargs):
     return Transaction.objects.filter(user=info.context.user).select_related('category')
@@ -54,7 +54,6 @@ class TransactionMutation(DjangoSerializerMutation):
     serializer_class = TransactionSerializer
     exclude_fields = ('user', )
     input_field_name = 'input'
-
 
 class DateRangeType(ObjectType):
   start = Date()
@@ -188,5 +187,4 @@ class CategorySetPeriodTotalQuery(ObjectType):
     if period_len not in PERIOD_LENGTHS:
       raise GraphQLError()
     return Transaction.category_set_period_total(info.context.user, period_len)
-    
     
