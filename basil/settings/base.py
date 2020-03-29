@@ -41,8 +41,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'graphene_django',
+    'graphene_subscriptions',
     'django_filters',
     'corsheaders',
+    'channels',
     'basil.apps.accounts',
     'basil.apps.transactions',
     'basil.apps.categories',
@@ -154,9 +156,21 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-# Redis configuration
+# Redis
 REDIS_HOST = os.getenv('BASIL_REDIS_HOST') or '127.0.0.1'
 REDIS_PORT = os.getenv('BASIL_BASIL_PORT') or 6379
 
-# Celery configuration
+# Celery
 BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
+
+# Channels
+ASGI_APPLICATION = "basil.routing.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(REDIS_HOST, REDIS_PORT)],
+        },
+    },
+}

@@ -5,7 +5,7 @@ from graphene.relay import Node
 import graphql_jwt
 from graphene_django import DjangoObjectType
 
-from basil.apps.accounts.api.graphql import UserProfileQuery
+from basil.apps.accounts.api.graphql import UserProfileQuery, UserProfileSubscription
 from basil.apps.transactions.api.graphql import (TransactionQuery, DateRangeQuery, 
     PeriodTotalQuery, CategoryTotalQuery, PeriodCategoryTotalQuery, CategoryPeriodTotalQuery, CategorySetPeriodTotalQuery)
 from basil.apps.categories.api.graphql import CategoryQuery, CategoryGroupQuery, CategoryMutation, CategoryGroupMutation
@@ -48,7 +48,10 @@ class Mutation(ObjectType):
   verify_token = graphql_jwt.Verify.Field()
   refresh_token = graphql_jwt.Refresh.Field()
 
-schema = Schema(query=Query, mutation=Mutation)
+class Subscription(UserProfileSubscription):
+  pass
+
+schema = Schema(query=Query, mutation=Mutation,subscription=Subscription)
 
 """
 Graphene Django Issues

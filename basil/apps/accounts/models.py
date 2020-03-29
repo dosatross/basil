@@ -18,6 +18,7 @@ class BasilUser(AbstractUser):
             'unique': _("A user with that username already exists."),
         },
     )
+    readonly = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
