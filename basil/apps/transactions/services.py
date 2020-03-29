@@ -18,6 +18,9 @@ def import_transactions_csv(user,transactions_csv_path,categories_map_csv_path,s
     added_transactions = []
     timezone = pytz.timezone(TIME_ZONE)
     
+    user.readonly = True
+    user.save(update_fields=['readonly'])
+
     for transaction in transactions:
       categorystr = transaction['category'].split(" - ")[0]
       subcategory = transaction['category'].split(" - ")[1]
@@ -30,6 +33,8 @@ def import_transactions_csv(user,transactions_csv_path,categories_map_csv_path,s
             print("New category " + categorystr + " - " + subcategory + " detected. New categories must be added before importing transactions.")
             for t in added_transactions:
               t.delete()
+            user.readonly = False
+            user.save(update_fields=['readonly'])
             return
           else:
             # get mapped basil category
@@ -40,6 +45,8 @@ def import_transactions_csv(user,transactions_csv_path,categories_map_csv_path,s
               print("New category " + categorystr + " - " + subcategory + " detected. New categories must be added before importing transactions.")
               for t in added_transactions:
                 t.delete()
+              user.readonly = False
+              user.save(update_fields=['readonly'])
               return
             break
 
@@ -62,6 +69,8 @@ def import_transactions_csv(user,transactions_csv_path,categories_map_csv_path,s
         print(serializer.errors)
         for t in added_transactions:
           t.delete()
+        user.readonly = False
+        user.save(update_fields=['readonly'])
         return
 
       
@@ -72,5 +81,7 @@ def import_transactions_csv(user,transactions_csv_path,categories_map_csv_path,s
         print(date)
     if replace:
       Transaction.objects.exclude(pk__in=map(lambda t: t.pk,added_transactions)).delete()
+    user.readonly = False
+    user.save(update_fields=['readonly'])
 
       
