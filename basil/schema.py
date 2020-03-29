@@ -4,11 +4,12 @@ from graphene import Schema, ObjectType, Field
 from graphene.relay import Node
 import graphql_jwt
 from graphene_django import DjangoObjectType
+
 from basil.apps.accounts.api.graphql import UserProfileQuery
 from basil.apps.transactions.api.graphql import (TransactionQuery, DateRangeQuery, 
     PeriodTotalQuery, CategoryTotalQuery, PeriodCategoryTotalQuery, CategoryPeriodTotalQuery, CategorySetPeriodTotalQuery)
 from basil.apps.categories.api.graphql import CategoryQuery, CategoryGroupQuery, CategoryMutation, CategoryGroupMutation
-from basil.apps.transactions.api.graphql import TransactionMutation
+from basil.apps.transactions.api.graphql import TransactionMutation, ImportTransactionCsvMutation
 
 from graphene_django.debug import DjangoDebug
 
@@ -33,6 +34,7 @@ class Mutation(ObjectType):
   transaction_create = TransactionMutation.CreateField()
   transaction_delete = TransactionMutation.DeleteField()
   transaction_update = TransactionMutation.UpdateField()
+  importTransactionCsv = ImportTransactionCsvMutation.Field()
 
   category_group_create = CategoryGroupMutation.CreateField()
   category_group_delete = CategoryGroupMutation.DeleteField()

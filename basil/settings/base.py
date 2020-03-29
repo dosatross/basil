@@ -152,3 +152,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Redis configuration
+REDIS_HOST = os.getenv('BASIL_REDIS_HOST') or '127.0.0.1'
+REDIS_PORT = os.getenv('BASIL_BASIL_PORT') or 6379
+
+# Celery configuration
+BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'

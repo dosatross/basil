@@ -6,9 +6,11 @@ from graphene import ObjectType, Field, String, Date, Float, Int, List, ID, Enum
 from graphene_django_extras import DjangoSerializerMutation, DjangoInputObjectType
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
+from graphene_file_upload.scalars import Upload
 
 from basil.utils.graphql import Connection
 from basil.apps.transactions.models import Transaction
+from basil.apps.transactions.tasks import import_transactions_csv_task
 from basil.apps.transactions.filters import TransactionFilter
 from basil.apps.transactions.api.serializers import TransactionSerializer
 from basil.apps.transactions.utils import date_start_end
@@ -54,6 +56,24 @@ class TransactionMutation(DjangoSerializerMutation):
     serializer_class = TransactionSerializer
     exclude_fields = ('user', )
     input_field_name = 'input'
+
+
+class ImportTransactionCsvMutation(graphene.Mutation):
+    class Arguments:
+      replace = graphene.Boolean(required=True)
+      file = Upload(required=True)
+
+    success = graphene.String()
+
+    def mutate(self, info, replace, file, **kwargs):
+      user = info.context.user
+      file_name = f'transactions_{user.id}.csv'
+      with open(f'./data/test/{file_name}', 'wb+') as destination:
+        for chunk in file.chunks():
+          destination.write(chunk)
+      import_transactions_csv_task.delay(user.id,file_name,replace=replace)
+      return ImportTransactionCsvMutation(success=True)
+
 
 class DateRangeType(ObjectType):
   start = Date()
