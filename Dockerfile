@@ -3,7 +3,7 @@ FROM python:3.7-alpine AS builder
 RUN apk add \
     --upgrade \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-    postgresql-dev g++ python3-dev musl-dev py-pandas
+    postgresql-dev g++ python3-dev musl-dev py-pandas libffi-dev openssl-dev
 COPY requirements.txt /
 WORKDIR /wheels
 RUN pip install -U pip && \
