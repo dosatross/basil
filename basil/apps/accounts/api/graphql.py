@@ -16,9 +16,9 @@ class UserProfileQuery(ObjectType):
     return user
 
 class UserProfileSubscription(ObjectType):
-    user_updated = Field(UserType, id=ID(required=True))
+    profile = Field(UserType, id=ID(required=True))
 
-    def resolve_user_updated(root, info, id):
+    def resolve_profile(root, info, id):
       return root.filter(
           lambda event:
               event.operation == UPDATED and
