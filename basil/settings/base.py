@@ -158,7 +158,7 @@ STATIC_URL = '/static/'
 
 # Redis
 REDIS_HOST = os.getenv('BASIL_REDIS_HOST') or '127.0.0.1'
-REDIS_PORT = os.getenv('BASIL_BASIL_PORT') or 6379
+REDIS_PORT = os.getenv('BASIL_REDIS_PORT') or 6379
 
 # Celery
 BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
@@ -174,3 +174,7 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+DATA_DIR = os.getenv('BASIL_DATA_DIR') or '/data/'
+
+UPLOAD_DATA_DIR = os.path.join(DATA_DIR,'upload')

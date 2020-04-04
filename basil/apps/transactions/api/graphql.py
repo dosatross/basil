@@ -1,3 +1,4 @@
+import os
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from graphql import GraphQLError
@@ -8,6 +9,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphene_file_upload.scalars import Upload
 
+from basil.settings import UPLOAD_DATA_DIR
 from basil.utils.graphql import Connection
 from basil.apps.transactions.models import Transaction
 from basil.apps.transactions.tasks import import_transactions_csv_task
@@ -68,7 +70,7 @@ class ImportTransactionCsvMutation(graphene.Mutation):
     def mutate(self, info, replace, file, **kwargs):
       user = info.context.user
       file_name = f'transactions_{user.id}.csv'
-      with open(f'./data/test/{file_name}', 'wb+') as destination:
+      with open(os.path.join(UPLOAD_DATA_DIR,file_name), 'wb+') as destination:
         for chunk in file.chunks():
           destination.write(chunk)
       import_transactions_csv_task.delay(user.id,file_name,replace=replace)

@@ -39,7 +39,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # for image in /opt/basil/docker_images/*; do docker load -i $image; done
 
   cd /opt/basil
-  if [ ! -f docker-compose.yml ]; then cp docker-compose.example.yml docker-compose.yml; fi
+  if [ ! -f docker-compose.yml ]; then cp docker-compose.dev.example.yml docker-compose.yml; fi
   docker-compose up -d basil-postgres
   docker-compose up -d basil-core
   docker-compose up -d basil-nginx

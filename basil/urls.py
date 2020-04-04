@@ -10,7 +10,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('docs/', include_docs_urls(title='Basil API Docs')),
     path('api-auth/', include('rest_framework.urls')), 
 		path("graphql", csrf_exempt(FileUploadGraphQLView.as_view(graphiql=settings.DEBUG))),
 ]

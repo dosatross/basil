@@ -1,0 +1,71 @@
+version: '3.7'
+
+services:
+  basil-postgres:
+    container_name: basil-postgres
+    image: postgres:12.2
+    restart: always
+    networks:
+      - basil-network
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=basil
+      - POSTGRES_USER=basil_user
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data/
+  basil-core:
+    container_name: basil-core
+    image: dosatross/basil
+    entrypoint: daphne -b 0.0.0.0 basil.asgi:application
+    restart: always
+    networks:
+      - basil-network
+    ports:
+      - 8000:8000
+    volumes:
+      - upload-volume:/data/upload
+    environment:
+      - BASIL_ENV=production
+      - BASIL_DB_HOST=basil-postgres
+      - BASIL_REDIS_HOST=basil-redis
+  basil-celery:
+    container_name: basil-celery
+    image: dosatross/basil
+    entrypoint: celery -A basil worker --loglevel=info
+    restart: always
+    networks:
+      - basil-network
+    volumes:
+      - upload-volume:/data/upload
+    environment:
+      - BASIL_ENV=production
+      - BASIL_DB_HOST=basil-postgres
+      - BASIL_REDIS_HOST=basil-redis
+  basil-redis:
+    container_name: basil-redis
+    image: redis:5
+    restart: always
+    networks:
+      - basil-network
+    ports:
+      - 6379:6379
+  basil-nginx:
+    container_name: basil-nginx
+    image: dosatross/basil-nginx
+    restart: always
+    networks:
+      - basil-network
+    ports:
+      - 80:80
+
+volumes:
+  postgres-volume:
+    name: postgres-volume
+  upload-volume:
+    name: upload-volume
+
+networks:
+  basil-network:
+    name: basil-network

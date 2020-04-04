@@ -1,5 +1,4 @@
-
-FROM python:3.7-alpine AS builder
+FROM nickgryg/alpine-pandas:3.7 AS builder
 RUN apk add \
     --upgrade \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \

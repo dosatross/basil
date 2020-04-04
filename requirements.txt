@@ -8,6 +8,7 @@ djangorestframework>=3.11.0
 djangorestframework-simplejwt>=4.4.0
 graphene-django>=2.9.0
 graphene-django-extras>=0.4.8
+graphene-django-optimizer>=0.6.2
 graphene-subscriptions>=1.0.2
 graphene-file-upload>=1.2.2
 django-graphql-jwt>=0.3.0
