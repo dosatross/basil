@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import Q, Sum, Func, F, Count
 from basil.apps.accounts.models import BasilUser
 from basil.apps.categories.models import Category, CategoryGroup
+from basil.apps.transaction_accounts.models import TransactionAccount
 from basil.apps.transactions.utils import *
 from basil.apps.transactions.constants import DJ_TRUNC
 
@@ -11,6 +12,7 @@ class Transaction(models.Model):
 	description = models.CharField(max_length=150, null=True)
 	category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
 	date = models.DateField()
+	transaction_account = models.ForeignKey(TransactionAccount, null=True, on_delete=models.SET_NULL)
 
 	user = models.ForeignKey(BasilUser, on_delete=models.CASCADE)
 

@@ -11,4 +11,10 @@ CHANNEL_LAYERS = {
     },
 }
 
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer"
+#     }
+# }
+
 DATA_DIR = os.path.join(BASE_DIR,'..','data')

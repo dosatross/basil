@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'basil.apps.accounts',
     'basil.apps.transactions',
     'basil.apps.categories',
+    'basil.apps.institutions',
+    'basil.apps.transaction_accounts'
     
 ]
 

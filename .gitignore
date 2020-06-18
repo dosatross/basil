@@ -2,6 +2,7 @@ data/
 
 # virtual environment
 env
+.venv
 
 #django
 *.log
